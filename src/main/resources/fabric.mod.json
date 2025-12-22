@@ -32,7 +32,7 @@
     "playclient.mixins.json"
   ],
   "custom": {
-    "meteor-client:color": "45,65,255",
+    "meteor-client:color": "45,75,255",
     "modmenu": {
       "parent": {
         "id": "meteor-client"

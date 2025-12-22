@@ -41,6 +41,7 @@ public class Payall extends Command {
         for (var player : players)
             mc.player.networkHandler.sendChatCommand("pay " + player.getProfile().name() + " " + money);
 
+        info("Paid to %d people", players.size());
         return SINGLE_SUCCESS;
     }
 }
