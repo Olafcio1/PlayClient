@@ -31,7 +31,7 @@ public class StaffWarner extends Module {
                             .visible(() -> mode.get() == Mode.Nick)
                     .build());
     StringListSetting regexpList = sgDetection.add(new StringListSetting.Builder()
-                            .name("reg-exps")
+                            .name("regexps")
                             .description("At least one regular expression must match")
                             .visible(() -> mode.get() == Mode.RegExp)
                     .build());
