@@ -12,7 +12,7 @@
     "homepage": "https://olafcio1.github.io"
   },
   "license": "Apache-2.0",
-  "icon": "assets/playclient/icon.png",
+  "icon": "assets/playclient/logo.png",
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
