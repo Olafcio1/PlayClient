@@ -1,6 +1,13 @@
 <div align="center">
+    <p></p>
+    <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-1.0.jar">
+        <img src="https://img.shields.io/badge/DOWNLOAD-beaa55?style=for-the-badge" alt="Download button" width="360" />
+    </a>
+</div>
 
-<h1>PlayClient</h1>
+<div align="center">
+
+<h1>🔰 PlayClient</h1>
 <p>Beautify. Improve. Repeat.</p>
 
 </div>
