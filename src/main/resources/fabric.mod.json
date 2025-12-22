@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "playclient",
+  "version": "${version}",
+  "name": "PlayClient",
+  "description": "Public Meteor addon making your life easier!",
+  "authors": [
+    "Olafcio"
+  ],
+  "contact": {
+    "sources": "https://github.com/Olafcio1/PlayClient",
+    "homepage": "https://olafcio1.github.io"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/playclient/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "pl.olafcio.playclient.PlayDataGenerator"
+    ],
+    "client": [
+      "pl.olafcio.playclient.Play"
+    ],
+    "main": [
+      "pl.olafcio.playclient.Play"
+    ],
+    "meteor": [
+      "pl.olafcio.playclient.PlayAddon"
+    ]
+  },
+  "mixins": [
+    "playclient.mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "45,65,255",
+    "modmenu": {
+      "parent": {
+        "id": "meteor-client"
+      }
+    }
+  },
+  "depends": {
+    "java": ">=21",
+    "meteor-client": "*"
+  },
+  "recommends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
