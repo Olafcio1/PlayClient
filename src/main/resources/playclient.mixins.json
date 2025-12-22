@@ -4,6 +4,8 @@
   "package": "pl.olafcio.playclient.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "meteor.ConfigMixin",
+    "meteor.ISetting"
   ],
   "client": [
   ],
