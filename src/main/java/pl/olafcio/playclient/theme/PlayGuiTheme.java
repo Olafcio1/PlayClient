@@ -66,8 +66,8 @@ public class PlayGuiTheme extends GuiTheme {
 
     public final Setting<Boolean> categoryIcons = sgGeneral.add(new BoolSetting.Builder()
         .name("category-icons")
-        .description("Adds item icons to module categories.")
-        .defaultValue(false)
+        .description("Adds icons to module categories.")
+        .defaultValue(true)
         .build()
     );
 
