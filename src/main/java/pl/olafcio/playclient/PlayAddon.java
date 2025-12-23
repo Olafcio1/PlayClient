@@ -7,6 +7,7 @@ import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.features.commands.Payall;
 import pl.olafcio.playclient.features.modules.StaffWarner;
 import pl.olafcio.playclient.theme.PlayGuiTheme;
@@ -16,7 +17,9 @@ public class PlayAddon extends MeteorAddon {
 
     @Override
     public void onInitialize() {
-        GuiThemes.add(new PlayGuiTheme());
+        if (!ArrayUtils.contains(GuiThemes.getNames(), "Play"))
+            GuiThemes.add(new PlayGuiTheme());
+
         Modules.get().add(new StaffWarner());
         Commands.add(new Payall());
     }

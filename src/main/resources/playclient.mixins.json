@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "meteor.ConfigMixin",
+    "meteor.GuiThemesMixin",
     "meteor.ISetting"
   ],
   "client": [
