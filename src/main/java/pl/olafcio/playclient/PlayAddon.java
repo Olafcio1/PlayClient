@@ -9,8 +9,8 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.features.commands.Payall;
-import pl.olafcio.playclient.features.modules.PlayerMover;
 import pl.olafcio.playclient.features.modules.StaffWarner;
+import pl.olafcio.playclient.features.modules.TargetStrafe;
 import pl.olafcio.playclient.theme.PlayGuiTheme;
 
 public class PlayAddon extends MeteorAddon {
@@ -22,7 +22,7 @@ public class PlayAddon extends MeteorAddon {
             GuiThemes.add(new PlayGuiTheme());
 
         Modules.get().add(new StaffWarner());
-        Modules.get().add(new PlayerMover());
+        Modules.get().add(new TargetStrafe());
 
         Commands.add(new Payall());
     }
