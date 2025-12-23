@@ -1,10 +1,12 @@
 package pl.olafcio.playclient;
 
+import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import net.fabricmc.loader.api.FabricLoader;
 import pl.olafcio.playclient.features.commands.Payall;
 import pl.olafcio.playclient.features.modules.StaffWarner;
 import pl.olafcio.playclient.theme.PlayGuiTheme;
@@ -22,6 +24,20 @@ public class PlayAddon extends MeteorAddon {
     @Override
     public void onRegisterCategories() {
         Modules.registerCategory(CATEGORY);
+    }
+
+    @Override
+    public String getWebsite() {
+        return FabricLoader.getInstance()
+                           .getModContainer("playclient").orElseThrow()
+                           .getMetadata()
+                           .getContact()
+                           .get("homepage").orElseThrow();
+    }
+
+    @Override
+    public GithubRepo getRepo() {
+        return new GithubRepo("Olafcio1", "PlayClient");
     }
 
     @Override

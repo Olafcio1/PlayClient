@@ -8,6 +8,7 @@
     "Olafcio"
   ],
   "contact": {
+    "issues": "https://github.com/Olafcio1/PlayClient/issues",
     "sources": "https://github.com/Olafcio1/PlayClient",
     "homepage": "https://olafcio1.github.io"
   },
@@ -33,7 +34,8 @@
     "playclient.mixins.json"
   ],
   "custom": {
-    "meteor-client:color": "45,75,255",
+    "meteor-client:color": "45,105,255",
+    "github:sha": "${gh_hash}",
     "modmenu": {
       "parent": {
         "id": "meteor-client"
