@@ -10,6 +10,10 @@ base {
     archivesName = project.archives_base_name
 }
 
+loom {
+    accessWidenerPath.set(projectDir.toPath().resolve("src/main/resources/playclient.accesswidener").toFile())
+}
+
 fabricApi {
     configureDataGeneration {
         client = true
