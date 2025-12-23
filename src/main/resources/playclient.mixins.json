@@ -8,6 +8,8 @@
     "meteor.ISetting"
   ],
   "client": [
+    "LogoDrawerMixin",
+    "SplashTextRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
