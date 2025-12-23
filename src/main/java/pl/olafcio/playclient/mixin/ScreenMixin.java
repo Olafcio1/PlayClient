@@ -1,5 +1,6 @@
 package pl.olafcio.playclient.mixin;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Final;
@@ -17,7 +18,7 @@ import java.util.List;
 public class ScreenMixin {
     @Shadow
     @Final
-    private List<Drawable> drawables;
+    public List<Drawable> drawables;
 
     @Unique
     private final Drawable prependedDrawable = (ctx, mouseX, mouseY, delta) -> {
@@ -31,5 +32,22 @@ public class ScreenMixin {
     protected void init(CallbackInfo ci) {
         drawables.remove(prependedDrawable);
         drawables.addFirst(prependedDrawable);
+    }
+
+    @Inject(at = @At("HEAD"), method = "render", cancellable = true)
+    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+        ci.cancel();
+
+        int size = this.drawables.size();
+        for (int i = 0; i < size; i++) {
+            var drawable = this.drawables.get(i);
+            drawable.render(context, mouseX, mouseY, deltaTicks);
+
+            var newSize = this.drawables.size();
+            if (size != newSize) {
+                i -= size - newSize;
+                size = newSize;
+            }
+        }
     }
 }

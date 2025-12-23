@@ -10,6 +10,7 @@
   "client": [
     "DrawContextMixin",
     "LogoDrawerMixin",
+    "MinecraftClientMixin",
     "PressableWidgetMixin",
     "ScreenMixin",
     "SplashTextRendererMixin"
