@@ -15,4 +15,5 @@
 ## 🪶 Features
 > **Note:** PlayClient is in preview. It is ready for production use, but may have significant changes once it's released.
 - [Module] StaffWarner: warns you when a staff member is detected
+- [Command] Payall: splits your money per all players
 - [Theme] Play: a custom theme, currently only having colorful module category headers
