@@ -12,9 +12,11 @@ import pl.olafcio.playclient.util.IDrawContext;
 public class MinecraftClientMixin {
     @Inject(at = @At("TAIL"), method = "setScreen")
     public void setScreen(Screen screen, CallbackInfo ci) {
-        screen.drawables.addFirst((ctx, mouseX, mouseY, delta) -> {
+        if (screen != null) {
+            screen.drawables.addFirst((ctx, mouseX, mouseY, delta) -> {
                 screen.drawables.removeFirst();
                 ((IDrawContext) ctx).playclient$showCursor();
-        });
+            });
+        }
     }
 }
