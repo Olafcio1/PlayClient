@@ -8,7 +8,10 @@
     "meteor.ISetting"
   ],
   "client": [
+    "DrawContextMixin",
     "LogoDrawerMixin",
+    "PressableWidgetMixin",
+    "ScreenMixin",
     "SplashTextRendererMixin"
   ],
   "injectors": {
