@@ -49,12 +49,13 @@ dependencies {
     modImplementation "meteordevelopment:meteor-client:${project.minecraft_version}-SNAPSHOT"
 }
 
-static String getLatestCommit() {
+String getLatestCommit() {
     var proc = new ProcessBuilder()
-            .command("git", "log")
+            .command("git", "log", "-n", "1")
+            .directory(projectDir)
             .inheritIO()
-    .start();
-    proc.waitFor();
+    .start()
+    proc.waitFor()
     return proc.inputStream.getText("UTF-8").split("\n")[0].split(" ")[1]
 }
 
@@ -119,18 +120,18 @@ static def deleteAll(Path directory) {
     Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
         @Override
         FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            Files.delete(file);
-            return FileVisitResult.CONTINUE;
+            Files.delete(file)
+            return FileVisitResult.CONTINUE
         }
 
         @Override
         FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
             if (e == null) {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
+                Files.delete(dir)
+                return FileVisitResult.CONTINUE
             } else {
                 // directory iteration failed
-                throw e;
+                throw e
             }
         }
     })
@@ -144,7 +145,7 @@ tasks.register("make") {
 
         deleteAll(bin)
 
-        var fn = "%s-%s.jar".formatted(archives_base_name, version);
+        var fn = "%s-%s.jar".formatted(archives_base_name, version)
 
         Files.createDirectory(bin)
         Files.move(
