@@ -18,7 +18,8 @@
 - [Module] PlayerMover: moves players when you hit them
 - [Module] TargetStrafe: strafes around players when you hit them
 - [Command] Payall: splits your money per all players
-- [Theme] Play: a custom theme, currently only having colorful module category headers
+- [Theme] Play: a custom theme, having colorful module category headers with special icons
+- [MC Theme] Custom game logo, button backgrounds & mouse pointer on hover
 
 ## 📃 TODO
 | Type   | Name         | Description                              | Planned version |
