@@ -27,3 +27,4 @@
 |--------|--------------|-----------------------------------------------------------------------------|-----------------|
 | Module | ElytraTarget | flies onto a player with elytra equipped                                    | v1.5            |
 | Module | InfReach     | expands your reach infinitely by teleporting to the target for the hit-time | v1.6            |
+| Module | TriggerBot   | attacks the entity you're looking at                                        | v1.7            |
