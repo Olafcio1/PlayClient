@@ -1,10 +1,11 @@
 package pl.olafcio.playclient.features.modules;
 
 import meteordevelopment.meteorclient.events.entity.player.AttackEntityEvent;
+import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.EntityTypeListSetting;
-import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
@@ -25,6 +26,12 @@ public class PlayerMover extends Module {
             .name("max-distance")
             .description("What distance to unset the target on.")
             .defaultValue(4)
+    .build());
+
+    BoolSetting preventMoving = settings.getDefaultGroup().add(new BoolSetting.Builder()
+            .name("prevent-moving")
+            .description("Prevent you from moving while the target is set.")
+            .defaultValue(false)
     .build());
 
     public PlayerMover() {
@@ -62,6 +69,12 @@ public class PlayerMover extends Module {
     public void onAttack(AttackEntityEvent event) {
         if (entities.get().contains(event.entity.getType()))
             target = event.entity;
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (preventMoving.get())
+            event.movement = Vec3d.ZERO;
     }
 
     @Override
