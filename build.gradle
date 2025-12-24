@@ -3,6 +3,7 @@ import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
+import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
 
 plugins {
@@ -152,11 +153,15 @@ tasks.register("make") {
                 libs.resolve(fn),
                 bin.resolve(fn)
         )
+        Files.copy(
+                bin.resolve(fn),
+                bin.resolve("%s-nightly.jar".formatted(archives_base_name))
+        )
 
         new ProcessBuilder()
-                .command("git", "add", "-f", "./${fn}")
+                .command("git", "add", "-f", fn)
                 .inheritIO()
-                .directory(libs.toFile())
+                .directory(bin.toFile())
         .start().waitFor()
 
         var readme = projectDir.toPath().resolve("README.md")
@@ -166,5 +171,27 @@ tasks.register("make") {
         readmeText = readmeText.replaceAll('/heads/main/bin/.+?\\.jar"', '/heads/main/bin/%s"'.formatted(fn))
 
         Files.writeString(readme, readmeText, readmeEnc)
+    }
+}
+
+tasks.register("snap") {
+    dependsOn "build"
+    doLast {
+        var bin = projectDir.toPath().resolve("./bin")
+        var libs = projectDir.toPath().resolve("./build/libs")
+
+        var fn = "%s-%s.jar".formatted(archives_base_name, version)
+
+        Files.move(
+                libs.resolve(fn),
+                bin.resolve("%s-nightly.jar".formatted(archives_base_name)),
+                StandardCopyOption.REPLACE_EXISTING
+        )
+
+        new ProcessBuilder()
+                .command("git", "add", "-f", fn)
+                .inheritIO()
+                .directory(bin.toFile())
+        .start().waitFor()
     }
 }

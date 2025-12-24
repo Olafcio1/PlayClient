@@ -3,6 +3,7 @@
     <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-1.4.jar">
         <img src="https://img.shields.io/badge/DOWNLOAD-beaa55?style=for-the-badge" alt="Download button" width="360" />
     </a>
+    <p>Or, alternatively, <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-nightly.jar">download the dev build</a></p>
 </div>
 
 <div align="center">
