@@ -22,6 +22,7 @@
 - [MC Theme] Custom game logo, button backgrounds & mouse pointer on hover
 
 ## 📃 TODO
-| Type   | Name         | Description                              | Planned version |
-|--------|--------------|------------------------------------------|-----------------|
-| Module | ElytraTarget | flies onto a player with elytra equipped | v1.5            |
+| Type   | Name         | Description                                                                 | Planned version |
+|--------|--------------|-----------------------------------------------------------------------------|-----------------|
+| Module | ElytraTarget | flies onto a player with elytra equipped                                    | v1.5            |
+| Module | InfReach     | expands your reach infinitely by teleporting to the target for the hit-time | v1.6            |
