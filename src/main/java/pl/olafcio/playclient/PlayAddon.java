@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.features.commands.Payall;
+import pl.olafcio.playclient.features.modules.ElytraTarget;
 import pl.olafcio.playclient.features.modules.PlayerMover;
 import pl.olafcio.playclient.features.modules.StaffWarner;
 import pl.olafcio.playclient.features.modules.TargetStrafe;
@@ -25,6 +26,7 @@ public class PlayAddon extends MeteorAddon {
         Modules.get().add(new StaffWarner());
         Modules.get().add(new PlayerMover());
         Modules.get().add(new TargetStrafe());
+        Modules.get().add(new ElytraTarget());
 
         Commands.add(new Payall());
     }
