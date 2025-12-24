@@ -24,6 +24,7 @@ public class ElytraTarget extends Module {
     }
 
     Entity target;
+    boolean just;
 
     @Override
     public void onActivate() {
@@ -37,6 +38,7 @@ public class ElytraTarget extends Module {
 
     private void reset() {
         target = null;
+        just = false;
     }
 
     @EventHandler(priority = -1)
@@ -44,7 +46,10 @@ public class ElytraTarget extends Module {
         if (!mc.player.isOnGround() && mc.player.getInventory().getStack(EquipmentSlot.BODY.getIndex()).getItem() == Items.ELYTRA) {
             mc.player.lookAt(EntityAnchorArgumentType.EntityAnchor.FEET, target.getEntityPos());
             mc.options.forwardKey.setPressed(true);
-        } else {
+
+            just = true;
+        } else if (just) {
+            just = false;
             mc.options.forwardKey.setPressed(false);
         }
     }
