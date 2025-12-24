@@ -60,12 +60,16 @@ public class TargetStrafe extends Module {
                 target = null;
             } else {
                 progress += addition.get();
-                progress %= 360;
+                if (progress >= 180)
+                    progress -= 360;
 
-                target.lastYaw = progress;
-                target.lastPitch = 90;
+                var headYaw = target.getHeadYaw();
+                target.setHeadYaw(progress + 90);
 
-                var hit = target.raycast(preferredDistance.get(), 0F, true);
+                target.lastYaw = progress + 90;
+                target.lastPitch = 0;
+
+                var hit = target.raycast(preferredDistance.get(), 1F, true);
                 var pos = hit.getPos();
 
                 pos = new Vec3d(pos.x, mc.player.getY(), pos.z);
@@ -75,6 +79,8 @@ public class TargetStrafe extends Module {
                         pos,
                         mc.player.isOnGround(), mc.player.horizontalCollision
                 ));
+
+                target.setHeadYaw(headYaw);
             }
         }
     }
