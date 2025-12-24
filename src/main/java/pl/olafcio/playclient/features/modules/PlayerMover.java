@@ -40,6 +40,15 @@ public class PlayerMover extends Module {
 
     @Override
     public void onActivate() {
+        reset();
+    }
+
+    @Override
+    public void onDeactivate() {
+        reset();
+    }
+
+    private void reset() {
         target = null;
         progress = 0;
     }
