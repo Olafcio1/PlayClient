@@ -1,6 +1,6 @@
 <div align="center">
     <p></p>
-    <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-1.2.1.jar">
+    <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-1.3.jar">
         <img src="https://img.shields.io/badge/DOWNLOAD-beaa55?style=for-the-badge" alt="Download button" width="360" />
     </a>
 </div>
@@ -15,5 +15,6 @@
 ## 🪶 Features
 > **Note:** PlayClient is in preview. It is ready for production use, but may have significant changes once it's released.
 - [Module] StaffWarner: warns you when a staff member is detected
+- [Module] PlayerMover: moves players when you hit them
 - [Command] Payall: splits your money per all players
 - [Theme] Play: a custom theme, currently only having colorful module category headers
