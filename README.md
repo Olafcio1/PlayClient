@@ -16,11 +16,11 @@
 > **Note:** PlayClient is in preview. It is ready for production use, but may have significant changes once it's released.
 - [Module] StaffWarner: warns you when a staff member is detected
 - [Module] PlayerMover: moves players when you hit them
+- [Module] TargetStrafe: strafes around players when you hit them
 - [Command] Payall: splits your money per all players
 - [Theme] Play: a custom theme, currently only having colorful module category headers
 
 ## 📃 TODO
 | Type   | Name         | Description                              | Planned version |
 |--------|--------------|------------------------------------------|-----------------|
-| Module | TargetStrafe | strafes around a player                  | v1.4            |
 | Module | ElytraTarget | flies onto a player with elytra equipped | v1.5            |
