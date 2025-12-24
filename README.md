@@ -18,3 +18,9 @@
 - [Module] PlayerMover: moves players when you hit them
 - [Command] Payall: splits your money per all players
 - [Theme] Play: a custom theme, currently only having colorful module category headers
+
+## 📃 TODO
+| Type   | Name         | Description                              | Planned version |
+|--------|--------------|------------------------------------------|-----------------|
+| Module | TargetStrafe | strafes around a player                  | v1.4            |
+| Module | ElytraTarget | flies onto a player with elytra equipped | v1.5            |
