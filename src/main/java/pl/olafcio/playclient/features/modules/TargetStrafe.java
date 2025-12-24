@@ -2,13 +2,16 @@ package pl.olafcio.playclient.features.modules;
 
 import meteordevelopment.meteorclient.events.entity.player.AttackEntityEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.EntityTypeListSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
+import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Vec3d;
 import pl.olafcio.playclient.PlayAddon;
@@ -38,6 +41,12 @@ public class TargetStrafe extends Module {
             .description("The amount of degrees to add each tick.")
             .range(1, 359)
             .sliderRange(1, 359)
+    .build());
+
+    BoolSetting ignoreFriends = settings.getDefaultGroup().add(new BoolSetting.Builder()
+            .name("ignore-friends")
+            .description("Disables the module on friends.")
+            .defaultValue(true)
     .build());
 
     public TargetStrafe() {
@@ -87,7 +96,11 @@ public class TargetStrafe extends Module {
 
     @EventHandler
     public void onAttack(AttackEntityEvent event) {
-        if (entities.get().contains(event.entity.getType()))
+        if (entities.get().contains(event.entity.getType()) && (
+                event.entity.getType() != EntityType.PLAYER ||
+                !ignoreFriends.get() ||
+                Friends.get().isFriend((PlayerEntity) event.entity)
+        ))
             target = event.entity;
     }
 
