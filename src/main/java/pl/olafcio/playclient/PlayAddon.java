@@ -25,6 +25,7 @@ public class PlayAddon extends MeteorAddon {
         Modules.get().add(new TargetStrafe());
         Modules.get().add(new ElytraTarget());
         Modules.get().add(new InfReach());
+        Modules.get().add(new TriggerBot());
 
         Commands.add(new Payall());
     }
