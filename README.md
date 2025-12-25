@@ -20,6 +20,7 @@
 - [Module] TargetStrafe: strafes around players when you hit them
 - [Module] ElytraTarget: flies onto a player with elytra
 - [Module] InfReach: expands your reach infinitely by teleporting to the target for the hit-time
+- [Module] TriggerBot: clicks on the entity you're looking at
 - [Command] Payall: splits your money per all players
 - [Theme] Play: a custom theme, having colorful module category headers with special icons
 - [MC Theme] Custom game logo, button backgrounds & mouse pointer on hover
@@ -27,4 +28,3 @@
 ## 📃 TODO
 | Type   | Name         | Description                                                                 | Planned version |
 |--------|--------------|-----------------------------------------------------------------------------|-----------------|
-| Module | TriggerBot   | attacks the entity you're looking at                                        | v1.7            |
