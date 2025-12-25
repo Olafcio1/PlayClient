@@ -13,8 +13,13 @@ import java.util.ArrayList;
 
 public class PacketDelay extends Module {
     private enum Mode {
-        Whitelist,
-        Blacklist
+        Whitelist(true),
+        Blacklist(false);
+
+        public final boolean expects;
+        Mode(boolean expects) {
+            this.expects = expects;
+        }
     }
 
     private final SettingGroup sgC2S = settings.createGroup("C2S");
@@ -65,7 +70,7 @@ public class PacketDelay extends Module {
 
     @EventHandler
     public void onPacketReceive(PacketEvent.Receive event) {
-        if (s2cPackets.get().contains(event.packet.getClass())) {
+        if (s2cPackets.get().contains(event.packet.getClass()) == s2cMode.get().expects) {
             event.cancel();
             s2cBuffer.add(event.packet);
         }
@@ -73,7 +78,7 @@ public class PacketDelay extends Module {
 
     @EventHandler
     public void onPacketSend(PacketEvent.Send event) {
-        if (c2sPackets.get().contains(event.packet.getClass())) {
+        if (c2sPackets.get().contains(event.packet.getClass()) == c2sMode.get().expects) {
             event.cancel();
             c2sBuffer.add(event.packet);
         }
