@@ -1,4 +1,4 @@
-package pl.olafcio.playclient.features.modules;
+package pl.olafcio.playclient.features.modules.play;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import meteordevelopment.meteorclient.commands.Commands;
