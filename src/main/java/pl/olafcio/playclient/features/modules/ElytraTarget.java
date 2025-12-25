@@ -56,6 +56,7 @@ public class ElytraTarget extends Module {
         if (target != null) {
             if (!target.isAlive()) {
                 target = null;
+                reset();
                 return;
             }
         } else return;
