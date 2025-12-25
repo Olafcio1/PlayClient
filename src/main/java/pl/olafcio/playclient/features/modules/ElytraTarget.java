@@ -65,13 +65,10 @@ public class ElytraTarget extends Module {
         var inventory = mc.player.getInventory();
         if (
                 !mc.player.isOnGround() &&
+                !mc.player.isInFluid() &&
                 inventory.getStack(32 + EquipmentSlot.BODY.getIndex()).getItem() == Items.ELYTRA
         ) {
             var rot = lookAt(EntityAnchorArgumentType.EntityAnchor.FEET, target.getEntityPos());
-
-            mc.options.forwardKey.setPressed(true);
-            mc.options.jumpKey.setPressed(true);
-
             if (mc.player.getVelocity().y < 0) {
                 var stacks = inventory.getMainStacks();
                 var index = 0;
@@ -99,9 +96,6 @@ public class ElytraTarget extends Module {
             just = true;
         } else if (just) {
             just = false;
-
-            mc.options.forwardKey.setPressed(false);
-            mc.options.jumpKey.setPressed(false);
         }
     }
 
@@ -140,7 +134,7 @@ public class ElytraTarget extends Module {
     public void onPacketSend(PacketEvent.Send event) {
         if (
                 event.packet instanceof PlayerMoveC2SPacket packet &&
-                yaw != null && pitch != null
+                just
         ) {
             packet.yaw = yaw;
             packet.pitch = pitch;
