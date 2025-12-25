@@ -77,7 +77,7 @@ public class ElytraTarget extends Module {
 
                 for (var stack : stacks) {
                     if (stack.getItem() == Items.FIREWORK_ROCKET) {
-                        InvUtils.quickSwap().from(index).to(inventory.getSelectedSlot());
+                        InvUtils.move().from(index).to(inventory.getSelectedSlot());
 
                         mc.interactionManager.sendSequencedPacket(mc.world, sequence -> {
                             return new PlayerInteractItemC2SPacket(
@@ -87,7 +87,7 @@ public class ElytraTarget extends Module {
                             );
                         });
 
-                        InvUtils.quickSwap().from(inventory.getSelectedSlot()).to(index);
+                        InvUtils.move().from(inventory.getSelectedSlot()).to(index);
                         break;
                     }
 
