@@ -1,6 +1,7 @@
 package pl.olafcio.playclient.features.modules;
 
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
+import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.PacketListSetting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -23,6 +24,11 @@ public class PacketDelay extends Module {
     }
 
     private final SettingGroup sgC2S = settings.createGroup("C2S");
+    private final BoolSetting c2sEnabled = sgC2S.add(new BoolSetting.Builder()
+            .name("enabled")
+            .description("Is this listing enabled")
+            .defaultValue(true)
+    .build());
     private final EnumSetting<Mode> c2sMode = sgC2S.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Packet listing mode")
@@ -35,6 +41,11 @@ public class PacketDelay extends Module {
     .build());
 
     private final SettingGroup sgS2C = settings.createGroup("S2C");
+    private final BoolSetting s2cEnabled = sgC2S.add(new BoolSetting.Builder()
+            .name("enabled")
+            .description("Is this listing enabled")
+            .defaultValue(true)
+    .build());
     private final EnumSetting<Mode> s2cMode = sgS2C.add(new EnumSetting.Builder<Mode>()
             .name("mode")
             .description("Packet listing mode")
@@ -70,7 +81,7 @@ public class PacketDelay extends Module {
 
     @EventHandler
     public void onPacketReceive(PacketEvent.Receive event) {
-        if (s2cPackets.get().contains(event.packet.getClass()) == s2cMode.get().expects) {
+        if (s2cEnabled.get() && s2cPackets.get().contains(event.packet.getClass()) == s2cMode.get().expects) {
             event.cancel();
             s2cBuffer.add(event.packet);
         }
@@ -78,7 +89,7 @@ public class PacketDelay extends Module {
 
     @EventHandler
     public void onPacketSend(PacketEvent.Send event) {
-        if (c2sPackets.get().contains(event.packet.getClass()) == c2sMode.get().expects) {
+        if (c2sEnabled.get() && c2sPackets.get().contains(event.packet.getClass()) == c2sMode.get().expects) {
             event.cancel();
             c2sBuffer.add(event.packet);
         }
