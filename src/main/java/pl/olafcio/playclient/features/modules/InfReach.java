@@ -84,7 +84,7 @@ public class InfReach extends Module {
 
                 processing = false;
             } catch (InterruptedException e) {
-                warning("[InfReach] Interrupted");
+                warning("Interrupted");
             }
         }).start();
     }
