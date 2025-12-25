@@ -96,6 +96,10 @@ public class ElytraTarget extends Module {
             just = true;
         } else if (just) {
             just = false;
+            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
+                    mc.player.getYaw(), mc.player.getPitch(),
+                    mc.player.isOnGround(), mc.player.horizontalCollision
+            ));
         }
     }
 
