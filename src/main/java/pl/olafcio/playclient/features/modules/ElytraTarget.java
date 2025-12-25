@@ -24,6 +24,8 @@ import pl.olafcio.playclient.PlayAddon;
 public class ElytraTarget extends Module {
     BoolSetting ignoreFriends = settings.getDefaultGroup().add(new BoolSetting.Builder()
             .name("ignore-friends")
+            .description("Disables the module on friends.")
+            .defaultValue(true)
     .build());
 
     public ElytraTarget() {
@@ -146,7 +148,7 @@ public class ElytraTarget extends Module {
     public void onAttack(AttackEntityEvent event) {
         if (event.entity.getType() == EntityType.PLAYER && (
                 !ignoreFriends.get() ||
-                Friends.get().isFriend((PlayerEntity) event.entity)
+                !Friends.get().isFriend((PlayerEntity) event.entity)
         ))
             target = event.entity;
     }

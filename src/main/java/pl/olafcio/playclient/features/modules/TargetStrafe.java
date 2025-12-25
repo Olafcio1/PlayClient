@@ -99,7 +99,7 @@ public class TargetStrafe extends Module {
         if (entities.get().contains(event.entity.getType()) && (
                 event.entity.getType() != EntityType.PLAYER ||
                 !ignoreFriends.get() ||
-                Friends.get().isFriend((PlayerEntity) event.entity)
+                !Friends.get().isFriend((PlayerEntity) event.entity)
         ))
             target = event.entity;
     }
