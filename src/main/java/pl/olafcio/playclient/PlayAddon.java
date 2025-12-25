@@ -14,6 +14,7 @@ import pl.olafcio.playclient.theme.PlayGuiTheme;
 
 public class PlayAddon extends MeteorAddon {
     public static Category CATEGORY = new Category("Play Client");
+    public static Category GRIEF = new Category("Play Client | Grief");
 
     @Override
     public void onInitialize() {
@@ -34,6 +35,7 @@ public class PlayAddon extends MeteorAddon {
     @Override
     public void onRegisterCategories() {
         Modules.registerCategory(CATEGORY);
+        Modules.registerCategory(GRIEF);
     }
 
     @Override
