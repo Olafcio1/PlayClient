@@ -1,6 +1,7 @@
 package pl.olafcio.playclient.features.modules;
 
 import meteordevelopment.meteorclient.events.entity.player.AttackEntityEvent;
+import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -52,6 +53,12 @@ public class InfReach extends Module {
                 mc.interactionManager.attackEntity(mc.player, event.entity);
             });
         }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (processing)
+            event.movement = Vec3d.ZERO;
     }
 
     @FunctionalInterface
