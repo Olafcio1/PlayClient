@@ -80,7 +80,7 @@ public class InfReach extends Module {
 
                 teleportChunked(xTimes, yTimes, zTimes, pos, maxPC, xDiff, yDiff, zDiff);
                 mc.execute(callback::apply);
-                teleportChunked(xTimes, yTimes, zTimes, previousPos, maxPC, -xDiff, -yDiff, -zDiff);
+                teleportChunked(xTimes, yTimes, zTimes, pos, maxPC, -xDiff, -yDiff, -zDiff);
 
                 processing = false;
             } catch (InterruptedException e) {
