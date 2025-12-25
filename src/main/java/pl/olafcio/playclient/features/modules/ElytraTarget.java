@@ -33,6 +33,7 @@ public class ElytraTarget extends Module {
     Entity target;
     boolean just;
     Float yaw, pitch;
+    float realYaw, realPitch;
 
     @Override
     public void onActivate() {
@@ -52,7 +53,7 @@ public class ElytraTarget extends Module {
     }
 
     @EventHandler(priority = -1)
-    public void onTick(TickEvent.Pre event) {
+    public void onTickPre(TickEvent.Pre event) {
         if (target != null) {
             if (!target.isAlive()) {
                 target = null;
@@ -104,6 +105,14 @@ public class ElytraTarget extends Module {
         }
     }
 
+    @EventHandler
+    public void onTickPost(TickEvent.Post event) {
+        if (just) {
+            mc.player.setPitch(realPitch);
+            mc.player.setYaw(realYaw);
+        }
+    }
+
     protected record Rotation(float yaw, float pitch) {}
 
     protected Rotation lookAt(EntityAnchorArgumentType.EntityAnchor anchorPoint, Vec3d target) {
@@ -115,8 +124,15 @@ public class ElytraTarget extends Module {
         double f = target.z - vec3d.z;
         double g = Math.sqrt(d * d + f * f);
 
-        pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * (double)(180F / (float)Math.PI))));
-        yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * (double)(180F / (float)Math.PI)) - 90.0F);
+        realPitch = self.getPitch();
+        realYaw = self.getYaw();
+
+        pitch = self.lastPitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * (double)(180F / (float)Math.PI))));
+        yaw = self.lastYaw = self.lastHeadYaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * (double)(180F / (float)Math.PI)) - 90.0F);
+
+        self.setPitch(pitch);
+        self.setYaw(yaw);
+        self.setHeadYaw(yaw + 90);
 
         self.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
                 yaw, pitch,
