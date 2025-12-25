@@ -5,6 +5,7 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
@@ -72,14 +73,17 @@ public class ElytraTarget extends Module {
 
                 for (var stack : stacks) {
                     if (stack.getItem() == Items.FIREWORK_ROCKET) {
-                        mc.player.networkHandler.sendPacket(inventory.createSlotSetPacket(index));
-                        mc.player.networkHandler.sendPacket(inventory.createSlotSetPacket(inventory.getSelectedSlot()));
-                        mc.player.networkHandler.sendPacket(new PlayerInteractItemC2SPacket(
-                                Hand.MAIN_HAND,
-                                0,
-                                rot.yaw, rot.pitch
-                        ));
+                        InvUtils.quickSwap().from(index).to(inventory.getSelectedSlot());
 
+                        mc.interactionManager.sendSequencedPacket(mc.world, sequence -> {
+                            return new PlayerInteractItemC2SPacket(
+                                    Hand.MAIN_HAND,
+                                    sequence,
+                                    rot.yaw, rot.pitch
+                            );
+                        });
+
+                        InvUtils.quickSwap().from(inventory.getSelectedSlot()).to(index);
                         break;
                     }
 
