@@ -55,7 +55,7 @@ String getLatestCommit() {
             .command("git", "log", "-n", "1")
             .directory(projectDir)
             .inheritIO()
-    .start()
+            .start()
     proc.waitFor()
     return proc.inputStream.getText("UTF-8").split("\n")[0].split(" ")[1]
 }
@@ -162,13 +162,13 @@ tasks.register("make") {
                 .command("git", "add", "-f", fn)
                 .inheritIO()
                 .directory(bin.toFile())
-        .start().waitFor()
+                .start().waitFor()
 
         var readme = projectDir.toPath().resolve("README.md")
         var readmeEnc = StandardCharsets.UTF_8
         var readmeText = Files.readString(readme, readmeEnc)
 
-        readmeText = readmeText.replaceAll('/heads/main/bin/.+?\\.jar">\n', '/heads/main/bin/%s">\n'.formatted(fn))
+        readmeText = readmeText.replaceAll('( {4}<a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin)/.+?\\.jar">', '$1/%s">'.formatted(fn))
 
         Files.writeString(readme, readmeText, readmeEnc)
     }
@@ -192,6 +192,6 @@ tasks.register("snap") {
                 .command("git", "add", "-f", fn)
                 .inheritIO()
                 .directory(bin.toFile())
-        .start().waitFor()
+                .start().waitFor()
     }
 }
