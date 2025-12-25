@@ -168,7 +168,7 @@ tasks.register("make") {
         var readmeEnc = StandardCharsets.UTF_8
         var readmeText = Files.readString(readme, readmeEnc)
 
-        readmeText = readmeText.replaceAll('/heads/main/bin/.+?\\.jar">\n', '/heads/main/bin/%s">\n'.formatted(fn))
+        readmeText = readmeText.replaceAll('/heads/main/bin/.+?\\.jar">$', '/heads/main/bin/%s">'.formatted(fn))
 
         Files.writeString(readme, readmeText, readmeEnc)
     }
