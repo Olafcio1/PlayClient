@@ -1,6 +1,7 @@
 package pl.olafcio.playclient.features.modules;
 
 import meteordevelopment.meteorclient.events.entity.player.AttackEntityEvent;
+import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.systems.friends.Friends;
@@ -31,6 +32,7 @@ public class ElytraTarget extends Module {
 
     Entity target;
     boolean just;
+    Float yaw, pitch;
 
     @Override
     public void onActivate() {
@@ -45,6 +47,8 @@ public class ElytraTarget extends Module {
     private void reset() {
         target = null;
         just = false;
+        yaw = null;
+        pitch = null;
     }
 
     @EventHandler(priority = -1)
@@ -111,11 +115,10 @@ public class ElytraTarget extends Module {
         double f = target.z - vec3d.z;
         double g = Math.sqrt(d * d + f * f);
 
-        var pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * (double)(180F / (float)Math.PI))));
-        var yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * (double)(180F / (float)Math.PI)) - 90.0F);
+        pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * (double)(180F / (float)Math.PI))));
+        yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * (double)(180F / (float)Math.PI)) - 90.0F);
 
-        self.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(
-                self.getEntityPos(),
+        self.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
                 yaw, pitch,
                 self.isOnGround(), self.horizontalCollision
         ));
@@ -130,6 +133,17 @@ public class ElytraTarget extends Module {
                 Friends.get().isFriend((PlayerEntity) event.entity)
         ))
             target = event.entity;
+    }
+
+    @EventHandler
+    public void onPacketSend(PacketEvent.Send event) {
+        if (
+                event.packet instanceof PlayerMoveC2SPacket packet &&
+                yaw != null && pitch != null
+        ) {
+            packet.yaw = yaw;
+            packet.pitch = pitch;
+        }
     }
 
     @Override
