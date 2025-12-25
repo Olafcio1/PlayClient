@@ -13,6 +13,10 @@
 
 </div>
 
+## 📺 Screenshots
+<img src="./docs/titlescreen.png" alt="R-Shift hack menu" width="275">
+<img src="./docs/hackmenu.png" alt="R-Shift hack menu" width="275">
+
 ## 🪶 Features
 > **Note:** PlayClient is in preview. It is ready for production use, but may have significant changes once it's released.
 - [Module] StaffWarner: warns you when a staff member is detected
