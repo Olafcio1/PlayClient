@@ -66,6 +66,7 @@ public class ElytraTarget extends Module {
         if (
                 !mc.player.isOnGround() &&
                 !mc.player.isInFluid() &&
+                !mc.player.getAbilities().flying &&
                 inventory.getStack(32 + EquipmentSlot.BODY.getIndex()).getItem() == Items.ELYTRA
         ) {
             var rot = lookAt(EntityAnchorArgumentType.EntityAnchor.FEET, target.getEntityPos());
