@@ -4,6 +4,7 @@
   "package": "pl.olafcio.playclient.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "PlayerEntityMixin",
     "meteor.ConfigMixin",
     "meteor.GuiThemesMixin",
     "meteor.ISetting"
