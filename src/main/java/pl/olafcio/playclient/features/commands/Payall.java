@@ -6,7 +6,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import meteordevelopment.meteorclient.commands.Command;
 import net.minecraft.command.CommandSource;
 
+import java.util.Random;
+
 public class Payall extends Command {
+    public static final Random random = new Random();
     public Payall() {
         super("payall", "Pays all players a divided");
     }
@@ -34,14 +37,31 @@ public class Payall extends Command {
         );
     }
 
-    public int giveaway(double money, float chunk) {
-        var players = mc.player.networkHandler.getPlayerList();
-        money /= players.size() / chunk;
+    public int giveaway(final double origMoney, final float chunk) {
+        new Thread(() -> {
+            try {
+                var players = mc.player.networkHandler.getPlayerList();
+                var money = origMoney / (players.size() / chunk);
 
-        for (var player : players)
-            mc.player.networkHandler.sendChatCommand("pay " + player.getProfile().name() + " " + money);
+                for (var player : players) {
+                    if (mc.player == null || mc.player.networkHandler == null)
+                        return;
 
-        info("Paid to %d people", players.size());
+                    mc.execute(() -> {
+                        mc.player.networkHandler.sendChatCommand("pay " + player.getProfile().name() + " " + money);
+                    });
+
+                    Thread.sleep(500 + random.nextLong(20)-10);
+                }
+
+                mc.execute(() -> {
+                    info("Paid to %d people", players.size());
+                });
+            } catch (InterruptedException e) {
+                warning("Interrupted");
+            }
+        }).start();
+
         return SINGLE_SUCCESS;
     }
 }
