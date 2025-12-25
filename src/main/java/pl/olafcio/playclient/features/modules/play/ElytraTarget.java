@@ -1,4 +1,4 @@
-package pl.olafcio.playclient.features.modules;
+package pl.olafcio.playclient.features.modules.play;
 
 import meteordevelopment.meteorclient.events.entity.player.AttackEntityEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;

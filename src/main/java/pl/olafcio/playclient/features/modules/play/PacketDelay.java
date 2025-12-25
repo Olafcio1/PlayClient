@@ -1,4 +1,4 @@
-package pl.olafcio.playclient.features.modules;
+package pl.olafcio.playclient.features.modules.play;
 
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
