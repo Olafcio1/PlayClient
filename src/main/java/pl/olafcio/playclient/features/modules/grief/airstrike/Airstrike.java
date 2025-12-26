@@ -8,13 +8,18 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.PlayAddon;
 
@@ -31,13 +36,27 @@ public class Airstrike extends Module {
     @EventHandler
     public void onTick(TickEvent.Pre event) {
         for (var record : records) {
-            mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
-                    0,
-                    Registries.ITEM.get(Identifier.of(record.entityType + "_spawn_egg"))
-                                   .getDefaultStack()
+            var item = Registries.ITEM.get(Identifier.of(
+                    record.entityType.equals("fireball")
+                        ? "fire_charge"
+                        : record.entityType + "_spawn_egg"
             ));
 
-            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+            var stack = new ItemStack(item, 1);
+            stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
+
+            mc.player.getInventory().setSelectedStack(stack);
+            mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
+                    mc.player.getInventory().getSelectedSlot(),
+                    stack
+            ));
+
+            mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(
+                    mc.player.getEntityPos(),
+                    Direction.EAST,
+                    mc.player.getBlockPos(),
+                    mc.player.isInsideWall()
+            ));
         }
     }
 
