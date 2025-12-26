@@ -39,7 +39,7 @@ public class AutoCommandSet extends Module {
 
         var starter = 0;
         var allType = "repeating";
-        if (chaining.get()) {
+        if (chaining.get() && commands.get().size() > 1) {
             starter = 1;
             allType = "chain";
 
