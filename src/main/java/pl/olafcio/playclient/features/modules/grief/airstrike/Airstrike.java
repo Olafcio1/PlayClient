@@ -61,13 +61,10 @@ public class Airstrike extends Module {
 
     protected NbtCompound getEntityData(AirstrikeRecord record) {
         var entityData = new NbtCompound();
-        entityData.putBoolean("CustomNameVisible", true);
 
-        if (record.noGravity)
-            entityData.putBoolean("NoGravity", true);
-
-        if (record.noAI)
-            entityData.putBoolean("NoAI", true);
+        if (record.nameVisible) entityData.putBoolean("CustomNameVisible", true);
+        if (record.noGravity) entityData.putBoolean("NoGravity", true);
+        if (record.noAI) entityData.putBoolean("NoAI", true);
 
         return entityData;
     }
@@ -167,6 +164,7 @@ public class Airstrike extends Module {
             var record = new AirstrikeRecord(
                     entityType,
                     null,
+                    true,
                     false,
                     false
             );
@@ -220,25 +218,32 @@ public class Airstrike extends Module {
             return x;
         }, theme);
 
+        setting(table, "Name Visible", theme.checkbox(
+                record.nameVisible
+        ), x -> {
+            x.action = () -> {
+                record.nameVisible = x.checked;
+            };
+            return x;
+        }, theme, entityData);
+
         setting(table, "No Gravity", theme.checkbox(
                 record.noGravity
         ), x -> {
-            entityData.add(x);
             x.action = () -> {
                 record.noGravity = x.checked;
             };
             return x;
-        }, theme);
+        }, theme, entityData);
 
         setting(table, "No AI", theme.checkbox(
                 record.noAI
         ), x -> {
-            entityData.add(x);
             x.action = () -> {
                 record.noAI = x.checked;
             };
             return x;
-        }, theme);
+        }, theme, entityData);
 
         var removeBtn = table.add(theme.minus()).expandCellX().right().widget();
 
@@ -267,6 +272,26 @@ public class Airstrike extends Module {
         var initedValue = init.apply(value);
         var valueCell = table.add(initedValue);
 
+        if (!(initedValue instanceof WCheckbox))
+            valueCell.expandX();
+
+        table.row();
+    }
+
+    protected <W extends WWidget> void setting(
+            WTable table,
+            String name,
+            W value,
+            Function<W, W> init,
+            GuiTheme theme,
+            ArrayList<WWidget> dump
+    ) {
+        dump.add(table.add(theme.label(name)).widget());
+
+        var initedValue = init.apply(value);
+        var valueCell = table.add(initedValue);
+
+        dump.add(initedValue);
         if (!(initedValue instanceof WCheckbox))
             valueCell.expandX();
 
