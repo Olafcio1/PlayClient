@@ -3,8 +3,10 @@ package pl.olafcio.playclient.features.modules.grief.airstrike;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
-import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
+import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
+import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.EntityType;
@@ -12,7 +14,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
@@ -70,7 +71,10 @@ public class Airstrike extends Module {
         var bottom = list.add(theme.horizontalList()).expandX().widget();
         var entityTypes = Registries.ENTITY_TYPE.streamEntries();
 
-        var etRest = entityTypes.toArray(RegistryEntry.Reference[]::new);
+        var etRest = entityTypes.map(x ->
+                                    EntityType.getId(x.value())
+                                              .getPath()
+                                ).toArray(String[]::new);
         var etFirst = etRest[0];
         ArrayUtils.shift(etRest, 0);
 
@@ -80,8 +84,7 @@ public class Airstrike extends Module {
         add.action = () -> {
             var entityType = newEntity.get();
             var record = new AirstrikeRecord(
-                    EntityType.getId((EntityType<?>) entityType.value())
-                            .getPath(),
+                    entityType,
                     null,
                     false,
                     false
@@ -89,62 +92,95 @@ public class Airstrike extends Module {
 
             records.add(record);
             appendRecord(theme, list, record);
+
+            ((WContainer) list.cells.getLast().widget()).cells.removeLast();
+
+            if (list.cells.size() > 1) {
+                var lastRecord = (WContainer) list.cells.get(list.cells.size() - 2).widget();
+                lastRecord.add(theme.horizontalSeparator()).expandX();
+            }
         };
 
-        for (var record : records)
-            appendRecord(theme, list, record);
+        if (!records.isEmpty()) {
+            for (var record : records)
+                appendRecord(theme, list, record);
+
+            var lastRecord = (WContainer) list.cells.getLast().widget();
+            lastRecord.cells.removeLast();
+        }
     }
 
     protected void appendRecord(GuiTheme theme, WVerticalList list, AirstrikeRecord record) {
         var widget = theme.verticalList();
         var table = theme.table();
 
-        table.add(setting("Entity Type", theme.textBox(
+        setting(table, "Entity Type", theme.textBox(
                 record.entityType
         ), x -> {
             x.action = () -> {
                 record.entityType = x.get();
             };
             return x;
-        }, theme));
+        }, theme);
 
-        table.add(setting("Custom Name", theme.textBox(
+        setting(table, "Custom Name", theme.textBox(
                 record.customName
         ), x -> {
             x.action = () -> {
                 record.customName = x.get();
             };
             return x;
-        }, theme));
+        }, theme);
 
-        table.add(setting("No Gravity", theme.checkbox(
+        setting(table, "No Gravity", theme.checkbox(
                 record.noGravity
         ), x -> {
             x.action = () -> {
                 record.noGravity = x.checked;
             };
             return x;
-        }, theme));
+        }, theme);
 
-        table.add(setting("No AI", theme.checkbox(
+        setting(table, "No AI", theme.checkbox(
                 record.noAI
         ), x -> {
             x.action = () -> {
                 record.noAI = x.checked;
             };
             return x;
-        }, theme));
+        }, theme);
 
-        widget.add(table);
-        widget.add(theme.horizontalSeparator());
-        list.add(widget);
+        var removeBtn = table.add(theme.minus()).right().widget();
+
+        var c1 = widget.add(table).expandX();
+        var c2 = widget.add(theme.horizontalSeparator()).expandX();
+
+        removeBtn.action = () -> {
+            widget.remove(c1);
+            widget.remove(c2);
+
+            records.remove(record);
+        };
+
+        list.add(widget).expandX();
     }
 
-    protected <W extends WWidget> WHorizontalList setting(String name, W value, Function<W, W> init, GuiTheme theme) {
-        var list = theme.horizontalList();
-        list.add(theme.label(name));
-        list.add(init.apply(value)).expandCellX();
-        return list;
+    protected <W extends WWidget> void setting(
+            WTable table,
+            String name,
+            W value,
+            Function<W, W> init,
+            GuiTheme theme
+    ) {
+        table.add(theme.label(name));
+
+        var initedValue = init.apply(value);
+        var valueCell = table.add(initedValue);
+
+        if (!(initedValue instanceof WCheckbox))
+            valueCell.expandX();
+
+        table.row();
     }
 
     @Override
