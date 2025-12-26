@@ -14,18 +14,18 @@ import net.minecraft.entity.TypedEntityData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.PlayAddon;
+import pl.olafcio.playclient.util.message.MessageParser;
+import pl.olafcio.playclient.util.message.MessageUnparser;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -47,11 +47,7 @@ public class Airstrike extends Module {
         for (var record : records) {
             if (affectEveryone) {
                 var entityData = getEntityData(record);
-                entityData.put("CustomName", TextCodecs.CODEC.encode(
-                        Text.of(record.customName),
-                        NbtOps.INSTANCE,
-                        new NbtCompound()
-                ).result().orElseThrow());
+                entityData.put("CustomName", new MessageUnparser(new MessageParser(record.customName).run()).run());
 
                 mc.player.networkHandler.sendPacket(new CommandExecutionC2SPacket(
                         "execute at @a run " +
