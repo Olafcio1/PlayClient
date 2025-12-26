@@ -9,8 +9,7 @@ import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.TypedEntityData;
+import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
@@ -28,7 +27,6 @@ import pl.olafcio.playclient.util.message.MessageParser;
 import pl.olafcio.playclient.util.message.MessageUnparser;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class Airstrike extends Module {
@@ -82,13 +80,13 @@ public class Airstrike extends Module {
         ));
 
         var stack = new ItemStack(item, 1);
+        var entityType = EntityType.get(record.entityType);
+
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
-
-        var map = stack.components;
-        var entityData = getEntityData(record);
-
-        map.onWrite();
-        map.changedComponents.put(DataComponentTypes.ENTITY_DATA, Optional.of(TypedEntityData.create(record.entityType, entityData)));
+        entityType.ifPresent(type -> stack.set(
+                DataComponentTypes.ENTITY_DATA,
+                TypedEntityData.create(type, getEntityData(record))
+        ));
 
         mc.player.getInventory().setSelectedStack(stack);
         mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
@@ -191,11 +189,19 @@ public class Airstrike extends Module {
         var widget = theme.verticalList();
         var table = theme.table();
 
+        var entityData = new ArrayList<WWidget>();
+
         setting(table, "Entity Type", theme.textBox(
                 record.entityType
         ), x -> {
             x.action = () -> {
-                record.entityType = x.get();
+                var value = x.get();
+                var isKnown = EntityType.get(value).isPresent();
+
+                record.entityType = value;
+
+                for (var setting : entityData)
+                    setting.visible = isKnown;
             };
             return x;
         }, theme);
@@ -212,6 +218,7 @@ public class Airstrike extends Module {
         setting(table, "No Gravity", theme.checkbox(
                 record.noGravity
         ), x -> {
+            entityData.add(x);
             x.action = () -> {
                 record.noGravity = x.checked;
             };
@@ -221,6 +228,7 @@ public class Airstrike extends Module {
         setting(table, "No AI", theme.checkbox(
                 record.noAI
         ), x -> {
+            entityData.add(x);
             x.action = () -> {
                 record.noAI = x.checked;
             };
