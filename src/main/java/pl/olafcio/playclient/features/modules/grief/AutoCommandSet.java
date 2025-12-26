@@ -65,6 +65,8 @@ public class AutoCommandSet extends Module {
 
         var i = 0;
         for (var cmd : commands.get()) {
+            cmd = cmd.replace("\"", "\\\"");
+
             if (!run(
                     "data merge block 0 %d 0 {Command:\"%s\"}",
                     i, cmd
