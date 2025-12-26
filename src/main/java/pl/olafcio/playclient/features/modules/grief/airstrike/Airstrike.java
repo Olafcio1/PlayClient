@@ -3,7 +3,6 @@ package pl.olafcio.playclient.features.modules.grief.airstrike;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
-import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
@@ -75,6 +74,7 @@ public class Airstrike extends Module {
                                     EntityType.getId(x.value())
                                               .getPath()
                                 ).toArray(String[]::new);
+
         var etFirst = etRest[0];
         ArrayUtils.shift(etRest, 0);
 
@@ -92,22 +92,10 @@ public class Airstrike extends Module {
 
             records.add(record);
             appendRecord(theme, list, record);
-
-            ((WContainer) list.cells.getLast().widget()).cells.removeLast();
-
-            if (list.cells.size() > 1) {
-                var lastRecord = (WContainer) list.cells.get(list.cells.size() - 2).widget();
-                lastRecord.add(theme.horizontalSeparator()).expandX();
-            }
         };
 
-        if (!records.isEmpty()) {
-            for (var record : records)
-                appendRecord(theme, list, record);
-
-            var lastRecord = (WContainer) list.cells.getLast().widget();
-            lastRecord.cells.removeLast();
-        }
+        for (var record : records)
+            appendRecord(theme, list, record);
     }
 
     protected void appendRecord(GuiTheme theme, WVerticalList list, AirstrikeRecord record) {
@@ -150,10 +138,10 @@ public class Airstrike extends Module {
             return x;
         }, theme);
 
-        var removeBtn = table.add(theme.minus()).right().widget();
+        var removeBtn = table.add(theme.minus()).expandCellX().right().widget();
 
-        var c1 = widget.add(table).expandX();
         var c2 = widget.add(theme.horizontalSeparator()).expandX();
+        var c1 = widget.add(table).expandX();
 
         removeBtn.action = () -> {
             widget.remove(c1);
