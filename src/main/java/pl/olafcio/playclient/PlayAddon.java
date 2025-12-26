@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.features.commands.Payall;
+import pl.olafcio.playclient.features.modules.grief.AutoCommandSet;
 import pl.olafcio.playclient.features.modules.play.*;
 import pl.olafcio.playclient.theme.PlayGuiTheme;
 
@@ -21,6 +22,7 @@ public class PlayAddon extends MeteorAddon {
         if (!ArrayUtils.contains(GuiThemes.getNames(), "Play"))
             GuiThemes.add(new PlayGuiTheme());
 
+        // Play
         Modules.get().add(new StaffWarner());
         Modules.get().add(new PlayerMover());
         Modules.get().add(new TargetStrafe());
@@ -28,6 +30,9 @@ public class PlayAddon extends MeteorAddon {
         Modules.get().add(new InfReach());
         Modules.get().add(new TriggerBot());
         Modules.get().add(new PacketDelay());
+
+        // Play | Grief
+        Modules.get().add(new AutoCommandSet());
 
         Commands.add(new Payall());
     }
