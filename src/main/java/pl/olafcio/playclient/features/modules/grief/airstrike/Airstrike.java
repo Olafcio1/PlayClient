@@ -1,0 +1,161 @@
+package pl.olafcio.playclient.features.modules.grief.airstrike;
+
+import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.gui.GuiTheme;
+import meteordevelopment.meteorclient.gui.widgets.WWidget;
+import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
+import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
+import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.orbit.EventHandler;
+import net.minecraft.entity.EntityType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.ArrayUtils;
+import pl.olafcio.playclient.PlayAddon;
+
+import java.util.ArrayList;
+import java.util.function.Function;
+
+public class Airstrike extends Module {
+    protected ArrayList<AirstrikeRecord> records;
+    public Airstrike() {
+        super(PlayAddon.GRIEF, "Airstrike", "Spawns entities as configured. Requires GMC.");
+        records = new ArrayList<>();
+    }
+
+    @EventHandler
+    public void onTick(TickEvent.Pre event) {
+        for (var record : records) {
+            mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
+                    0,
+                    Registries.ITEM.get(Identifier.of(record.entityType + "_spawn_egg"))
+                                   .getDefaultStack()
+            ));
+
+            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+        }
+    }
+
+    @Override
+    public Module fromTag(NbtCompound tag) {
+        super.fromTag(tag);
+
+        tag.getList("settings-records")
+           .ifPresent(nbtElements -> {
+               records.clear();
+               nbtElements.forEach(el -> {
+                   if (!(el instanceof NbtCompound))
+                       throw new AssertionError("How the fuck does this contain non-NBT compounds! Did you tamper with data?");
+
+                   records.add(AirstrikeRecord.fromNBT((NbtCompound) el));
+               });
+           });
+
+        return this;
+    }
+
+    @Override
+    public WWidget getWidget(GuiTheme theme) {
+        var list = theme.verticalList();
+        fillList(theme, list);
+        return list;
+    }
+
+    protected void fillList(GuiTheme theme, WVerticalList list) {
+        for (var record : records)
+            appendRecord(theme, list, record);
+
+        var bottom = list.add(theme.horizontalList()).expandX().widget();
+        var entityTypes = Registries.ENTITY_TYPE.streamEntries();
+
+        var etRest = entityTypes.toArray(RegistryEntry.Reference[]::new);
+        var etFirst = etRest[0];
+        ArrayUtils.shift(etRest, 0);
+
+        var newEntity = bottom.add(theme.dropdown(etRest, etFirst)).expandX().widget();
+        var add = bottom.add(theme.plus()).widget();
+
+        add.action = () -> {
+            var entityType = newEntity.get();
+            var record = new AirstrikeRecord(
+                    EntityType.getId((EntityType<?>) entityType.value())
+                            .getPath(),
+                    null,
+                    false,
+                    false
+            );
+
+            records.add(record);
+            appendRecord(theme, list, record);
+        };
+    }
+
+    protected void appendRecord(GuiTheme theme, WVerticalList list, AirstrikeRecord record) {
+        var widget = theme.verticalList();
+        var table = theme.table();
+
+        table.add(setting("Entity Type", theme.textBox(
+                record.entityType
+        ), x -> {
+            x.action = () -> {
+                record.entityType = x.get();
+            };
+            return x;
+        }, theme));
+
+        table.add(setting("Custom Name", theme.textBox(
+                record.customName
+        ), x -> {
+            x.action = () -> {
+                record.customName = x.get();
+            };
+            return x;
+        }, theme));
+
+        table.add(setting("No Gravity", theme.checkbox(
+                record.noGravity
+        ), x -> {
+            x.action = () -> {
+                record.noGravity = x.checked;
+            };
+            return x;
+        }, theme));
+
+        table.add(setting("No AI", theme.checkbox(
+                record.noAI
+        ), x -> {
+            x.action = () -> {
+                record.noAI = x.checked;
+            };
+            return x;
+        }, theme));
+
+        widget.add(table);
+        widget.add(theme.horizontalSeparator());
+        list.add(widget);
+    }
+
+    protected <W extends WWidget> WHorizontalList setting(String name, W value, Function<W, W> init, GuiTheme theme) {
+        var list = theme.horizontalList();
+        list.add(theme.label(name));
+        list.add(init.apply(value)).expandCellX();
+        return list;
+    }
+
+    @Override
+    public NbtCompound toTag() {
+        var tag = super.toTag();
+        var output = new NbtList();
+
+        var stream = records.stream().map(AirstrikeRecord::toNBT);
+        stream.forEach(output::add);
+
+        tag.put("settings-records", output);
+        return tag;
+    }
+}
