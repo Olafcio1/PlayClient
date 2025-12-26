@@ -54,13 +54,13 @@ public class AutoCommandSet extends Module {
                                                   "%s_command_block%s{auto:1%s}"
                                                  ).formatted(
                                                          starter,
-                                                         commands.get().size(),
+                                                         commands.get().size() - 1,
                                                          allType,
                                                          chaining.get() ? "[facing=up]" : "",
                                                          trackOutput.get() == true ? "" : ",TrackOutput:0"
                                                  ));
         mc.player.networkHandler.sendChatCommand("setblock 0 0 1 redstone_block");
-        mc.player.networkHandler.sendChatCommand("setblock 0 1 1 powered_rail");
+        mc.player.networkHandler.sendChatCommand("setblock 0 1 1 activator_rail");
         mc.player.networkHandler.sendChatCommand("setblock 0 2 1 bedrock");
 
         var i = 0;
