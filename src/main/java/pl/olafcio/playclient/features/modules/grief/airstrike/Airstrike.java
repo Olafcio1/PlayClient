@@ -67,9 +67,6 @@ public class Airstrike extends Module {
     }
 
     protected void fillList(GuiTheme theme, WVerticalList list) {
-        for (var record : records)
-            appendRecord(theme, list, record);
-
         var bottom = list.add(theme.horizontalList()).expandX().widget();
         var entityTypes = Registries.ENTITY_TYPE.streamEntries();
 
@@ -93,6 +90,9 @@ public class Airstrike extends Module {
             records.add(record);
             appendRecord(theme, list, record);
         };
+
+        for (var record : records)
+            appendRecord(theme, list, record);
     }
 
     protected void appendRecord(GuiTheme theme, WVerticalList list, AirstrikeRecord record) {
