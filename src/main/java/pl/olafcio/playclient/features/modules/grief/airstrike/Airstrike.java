@@ -74,19 +74,24 @@ public class Airstrike extends Module {
 
     protected void spawnWithPackets(AirstrikeRecord record) {
         var item = Registries.ITEM.get(Identifier.of(
-                record.entityType.equals("fireball")
-                        ? "fire_charge"
-                        : record.entityType + "_spawn_egg"
+                record.entityType.equals("fireball") ? "fire_charge" :
+                record.entityType.equals("armor_stand") ? "armor_stand" :
+                record.entityType + "_spawn_egg"
         ));
 
         var stack = new ItemStack(item, 1);
         var entityType = EntityType.get(record.entityType);
 
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
-        entityType.ifPresent(type -> stack.set(
-                DataComponentTypes.ENTITY_DATA,
-                TypedEntityData.create(type, getEntityData(record))
-        ));
+        entityType.ifPresent(type -> {
+            var nbt = getEntityData(record);
+            nbt.putString("id", record.entityType);
+
+            stack.set(
+                    DataComponentTypes.ENTITY_DATA,
+                    TypedEntityData.create(type, nbt)
+            );
+        });
 
         mc.player.getInventory().setSelectedStack(stack);
         mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
