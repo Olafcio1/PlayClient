@@ -41,7 +41,7 @@ public class PacketDelay extends Module {
     .build());
 
     private final SettingGroup sgS2C = settings.createGroup("S2C");
-    private final BoolSetting s2cEnabled = sgC2S.add(new BoolSetting.Builder()
+    private final BoolSetting s2cEnabled = sgS2C.add(new BoolSetting.Builder()
             .name("enabled")
             .description("Is this listing enabled")
             .defaultValue(true)
