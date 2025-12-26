@@ -22,6 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 import pl.olafcio.playclient.PlayAddon;
 import pl.olafcio.playclient.util.message.MessageParser;
 import pl.olafcio.playclient.util.message.MessageUnparser;
@@ -72,7 +73,10 @@ public class Airstrike extends Module {
     protected void spawnWithPackets(AirstrikeRecord record) {
         var item = Registries.ITEM.get(Identifier.of(
                 record.entityType.equals("fireball") ? "fire_charge" :
-                record.entityType.equals("armor_stand") ? "armor_stand" :
+                (
+                        record.entityType.equals("armor_stand") ||
+                        record.entityType.endsWith("_boat")
+                ) ? record.entityType :
                 record.entityType + "_spawn_egg"
         ));
 
@@ -82,11 +86,11 @@ public class Airstrike extends Module {
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
         entityType.ifPresent(type -> {
             var nbt = getEntityData(record);
-            nbt.putString("id", record.entityType);
+            var data = withEntityType(record, type, nbt);
 
             stack.set(
                     DataComponentTypes.ENTITY_DATA,
-                    TypedEntityData.create(type, nbt)
+                    data
             );
         });
 
@@ -102,6 +106,14 @@ public class Airstrike extends Module {
                 mc.player.getBlockPos(),
                 mc.player.isInsideWall()
         ));
+    }
+
+    @SuppressWarnings("unchecked")
+    private @NotNull <T extends EntityType<?>> TypedEntityData<EntityType<?>> withEntityType(AirstrikeRecord record, T type, NbtCompound nbt) {
+        var data = TypedEntityData.create(type, nbt);
+        data.nbt.putString("id", record.entityType);
+
+        return (TypedEntityData<EntityType<?>>) data;
     }
 
     @Override
