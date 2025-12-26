@@ -10,12 +10,16 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.TypedEntityData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
@@ -24,40 +28,84 @@ import org.apache.commons.lang3.ArrayUtils;
 import pl.olafcio.playclient.PlayAddon;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class Airstrike extends Module {
-    protected ArrayList<AirstrikeRecord> records;
+    public final ArrayList<AirstrikeRecord> records;
+    public boolean affectEveryone;
+
     public Airstrike() {
         super(PlayAddon.GRIEF, "Airstrike", "Spawns entities as configured. Requires GMC.");
+
         records = new ArrayList<>();
+        affectEveryone = false;
     }
 
     @EventHandler
     public void onTick(TickEvent.Pre event) {
         for (var record : records) {
-            var item = Registries.ITEM.get(Identifier.of(
-                    record.entityType.equals("fireball")
+            if (affectEveryone) {
+                var entityData = getEntityData(record);
+                entityData.put("CustomName", TextCodecs.CODEC.encode(
+                        Text.of(record.customName),
+                        NbtOps.INSTANCE,
+                        new NbtCompound()
+                ).result().orElseThrow());
+
+                mc.player.networkHandler.sendPacket(new CommandExecutionC2SPacket(
+                        "execute at @a run " +
+                        "summon " + record.entityType + " " +
+                        "~ ~ ~ " +
+                        entityData
+                ));
+            } else {
+                spawnWithPackets(record);
+            }
+        }
+    }
+
+    protected NbtCompound getEntityData(AirstrikeRecord record) {
+        var entityData = new NbtCompound();
+        entityData.putBoolean("CustomNameVisible", true);
+
+        if (record.noGravity)
+            entityData.putBoolean("NoGravity", true);
+
+        if (record.noAI)
+            entityData.putBoolean("NoAI", true);
+
+        return entityData;
+    }
+
+    protected void spawnWithPackets(AirstrikeRecord record) {
+        var item = Registries.ITEM.get(Identifier.of(
+                record.entityType.equals("fireball")
                         ? "fire_charge"
                         : record.entityType + "_spawn_egg"
-            ));
+        ));
 
-            var stack = new ItemStack(item, 1);
-            stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
+        var stack = new ItemStack(item, 1);
+        stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
 
-            mc.player.getInventory().setSelectedStack(stack);
-            mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
-                    mc.player.getInventory().getSelectedSlot(),
-                    stack
-            ));
+        var map = stack.components;
+        var entityData = getEntityData(record);
 
-            mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(
-                    mc.player.getEntityPos(),
-                    Direction.EAST,
-                    mc.player.getBlockPos(),
-                    mc.player.isInsideWall()
-            ));
-        }
+        map.onWrite();
+        map.changedComponents.put(DataComponentTypes.ENTITY_DATA, Optional.of(TypedEntityData.create(record.entityType, entityData)));
+
+        mc.player.getInventory().setSelectedStack(stack);
+        mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
+                mc.player.getInventory().getSelectedSlot(),
+                stack
+        ));
+
+        mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(
+                mc.player.getEntityPos(),
+                Direction.EAST,
+                mc.player.getBlockPos(),
+                mc.player.isInsideWall()
+        ));
     }
 
     @Override
@@ -69,10 +117,17 @@ public class Airstrike extends Module {
                records.clear();
                nbtElements.forEach(el -> {
                    if (!(el instanceof NbtCompound))
-                       throw new AssertionError("How the fuck does this contain non-NBT compounds! Did you tamper with data?");
+                       throw new AssertionError(
+                               "How the fuck does the record list contain non-NBT compounds! " +
+                                           "Did you tamper with the data?");
 
                    records.add(AirstrikeRecord.fromNBT((NbtCompound) el));
                });
+           });
+
+        tag.getBoolean("settings-affect-everyone")
+           .ifPresent(value -> {
+               affectEveryone = value;
            });
 
         return this;
@@ -86,6 +141,14 @@ public class Airstrike extends Module {
     }
 
     protected void fillList(GuiTheme theme, WVerticalList list) {
+        listAppendAE(theme, list);
+        listAppendBottom(theme, list);
+
+        for (var record : records)
+            appendRecord(theme, list, record);
+    }
+
+    protected void listAppendBottom(GuiTheme theme, WVerticalList list) {
         var bottom = list.add(theme.horizontalList()).expandX().widget();
         var entityTypes = Registries.ENTITY_TYPE.streamEntries();
 
@@ -112,9 +175,20 @@ public class Airstrike extends Module {
             records.add(record);
             appendRecord(theme, list, record);
         };
+    }
 
-        for (var record : records)
-            appendRecord(theme, list, record);
+    protected void listAppendAE(GuiTheme theme, WVerticalList list) {
+        var aeW = theme.horizontalList();
+
+        aeW.add(theme.label("Affect Everyone")).widget()
+             .tooltip = "Uses /execute instead of packets. Requires OP.";
+
+        var check = aeW.add(theme.checkbox(affectEveryone)).widget();
+        check.action = () -> {
+            affectEveryone = check.checked;
+        };
+
+        list.add(aeW);
     }
 
     protected void appendRecord(GuiTheme theme, WVerticalList list, AirstrikeRecord record) {
@@ -199,6 +273,7 @@ public class Airstrike extends Module {
         stream.forEach(output::add);
 
         tag.put("settings-records", output);
+        tag.putBoolean("settings-affect-everyone", affectEveryone);
         return tag;
     }
 }
