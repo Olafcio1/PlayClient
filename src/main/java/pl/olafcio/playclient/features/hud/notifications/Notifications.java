@@ -6,6 +6,7 @@ import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.nbt.NbtList;
 import pl.olafcio.playclient.PlayAddon;
 
 import java.util.ArrayList;
@@ -81,8 +82,6 @@ public class Notifications extends HudElement {
                     // showing
                 } else if (timeEnd >= now) {
                     // rendering
-                    renderer.quad(x, offset, width, height, background.get());
-                    renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
                 } else if (timeEnd + HIDE_DURATION >= now) {
                     // hiding
                 } else {
@@ -90,8 +89,11 @@ public class Notifications extends HudElement {
                     continue;
                 }
 
+                renderer.quad(x, offset, width, height, background.get());
+                renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
+
                 renderer.text("Meteor • " + notif.prefixTitle(), x + 3, offset + 3, textColor.get(), true, .7d);
-                renderer.text(notif.msg().getString(), x + 3, offset + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true);
+                drawMultiText(renderer, notif.msg(), x + 3, offset + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true, 1d);
 
                 offset -= height + gap;
             }
@@ -100,6 +102,35 @@ public class Notifications extends HudElement {
                 notifications.remove(notif);
 
             toRemove.clear();
+        }
+    }
+
+    private void drawMultiText(
+            HudRenderer renderer,
+            NbtList fragments,
+            double x,
+            double y,
+            Color color,
+            boolean shadow,
+            double scale
+    ) {
+        for (var token : fragments) {
+            var compound = token.asCompound().orElseThrow();
+            var text = compound.getString("text").orElseThrow();
+
+            if (compound.contains("color")) {
+                var hex = compound.getString("color").orElseThrow();
+                var packed = Integer.parseInt(hex.substring(1), 16);
+
+                color = new Color(packed);
+            }
+
+            renderer.text(
+                    text,
+                    x, y,
+                    color,
+                    shadow, scale
+            );
         }
     }
 
