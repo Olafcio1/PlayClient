@@ -37,7 +37,13 @@ public class PacketDelay extends Module {
     private final PacketListSetting c2sPackets = sgC2S.add(new PacketListSetting.Builder()
             .name("packets")
             .description("The list of packets")
-            .filter(packet -> packet.getPackageName().contains("c2s"))
+            .filter(packet -> {
+                try {
+                    return packet.getPackageName().contains("c2s") || packet.getDeclaredMethod("apply").getReturnType().getSimpleName().equals("class_2602");
+                } catch (NoSuchMethodException e) {
+                    return false;
+                }
+            })
     .build());
 
     private final SettingGroup sgS2C = settings.createGroup("S2C");
@@ -54,7 +60,13 @@ public class PacketDelay extends Module {
     private final PacketListSetting s2cPackets = sgS2C.add(new PacketListSetting.Builder()
             .name("packets")
             .description("The list of packets")
-            .filter(packet -> packet.getPackageName().contains("s2c"))
+            .filter(packet -> {
+                try {
+                    return packet.getPackageName().contains("s2c") || packet.getDeclaredMethod("apply").getReturnType().getSimpleName().equals("class_2792");
+                } catch (NoSuchMethodException e) {
+                    return false;
+                }
+            })
     .build());
 
     private final ArrayList<Packet<?>> c2sBuffer;
