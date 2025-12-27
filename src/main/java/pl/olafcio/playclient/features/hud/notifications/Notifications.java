@@ -168,8 +168,14 @@ public class Notifications extends HudElement {
         renderer.text("Meteor • " + notif.prefixTitle, x + 3, y + 3, textColor.get(), true, .8d);
         drawMultiText(renderer, notif.msg, x + 3, y + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true, 1d);
 
-        for (int r = 0; r < borderSize.get(); r++)
-            renderer.drawContext.drawStrokedRectangle(x + r, y + r, width - r, height - r, borderColor.get().getPacked());
+        var bSize = borderSize.get();
+        var bColor = borderColor.get();
+
+        renderer.quad(x, y, bSize, height, bColor);
+        renderer.quad(x + width - bSize, y, bSize, height, bColor);
+
+        renderer.quad(x, y, width, bSize, bColor);
+        renderer.quad(x, y + height - bSize, width, bSize, bColor);
 
         renderer.drawContext.disableScissor();
     }
