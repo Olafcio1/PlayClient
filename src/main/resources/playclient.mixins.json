@@ -11,6 +11,7 @@
   ],
   "client": [
     "DrawContextMixin",
+    "InventoryScreenMixin",
     "LogoDrawerMixin",
     "MinecraftClientMixin",
     "PressableWidgetMixin",
