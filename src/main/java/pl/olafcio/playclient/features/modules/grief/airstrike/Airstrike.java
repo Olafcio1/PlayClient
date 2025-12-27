@@ -88,6 +88,7 @@ public class Airstrike extends Module {
         if (record.nameVisible) entityData.putBoolean("CustomNameVisible", true);
         if (record.noGravity) entityData.putBoolean("NoGravity", true);
         if (record.noAI) entityData.putBoolean("NoAI", true);
+        if (record.persistenceRequired) entityData.putBoolean("PersistenceRequired", true);
 
         return entityData;
     }
@@ -221,6 +222,7 @@ public class Airstrike extends Module {
                     null,
                     true,
                     false,
+                    false,
                     false
             );
 
@@ -310,6 +312,15 @@ public class Airstrike extends Module {
         ), x -> {
             x.action = () -> {
                 record.noAI = x.checked;
+            };
+            return x;
+        }, theme, entityData);
+
+        setting(table, "Persistence Required", theme.checkbox(
+                record.persistenceRequired
+        ), x -> {
+            x.action = () -> {
+                record.persistenceRequired = x.checked;
             };
             return x;
         }, theme, entityData);

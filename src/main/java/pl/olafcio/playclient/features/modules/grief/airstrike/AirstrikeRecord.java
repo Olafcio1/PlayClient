@@ -9,13 +9,15 @@ public class AirstrikeRecord {
     public boolean nameVisible;
     public boolean noGravity;
     public boolean noAI;
+    public boolean persistenceRequired;
 
-    public AirstrikeRecord(String entityType, @Nullable String customName, boolean nameVisible, boolean noGravity, boolean noAI) {
+    public AirstrikeRecord(String entityType, @Nullable String customName, boolean nameVisible, boolean noGravity, boolean noAI, boolean persistenceRequired) {
         this.entityType = entityType;
         this.customName = customName == null ? "&aFucked by &bPlay Client&8 | &c@olafcio&4 on YT" : customName;
         this.nameVisible = nameVisible;
         this.noGravity = noGravity;
         this.noAI = noAI;
+        this.persistenceRequired = persistenceRequired;
     }
 
     public static AirstrikeRecord fromNBT(NbtCompound nbt) {
@@ -24,7 +26,8 @@ public class AirstrikeRecord {
                 nbt.getString("custom-name").orElse(null),
                 nbt.getBoolean("name-visible", true),
                 nbt.getBoolean("no-gravity", false),
-                nbt.getBoolean("no-ai", false)
+                nbt.getBoolean("no-ai", false),
+                nbt.getBoolean("persistence-required", false)
         );
     }
 
@@ -35,6 +38,7 @@ public class AirstrikeRecord {
         nbt.putBoolean("name-visible", nameVisible);
         nbt.putBoolean("no-gravity", noGravity);
         nbt.putBoolean("no-ai", noAI);
+        nbt.putBoolean("persistence-required", persistenceRequired);
         return nbt;
     }
 }
