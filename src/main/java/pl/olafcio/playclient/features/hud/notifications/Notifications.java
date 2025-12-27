@@ -7,6 +7,7 @@ import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.util.Formatting;
 import pl.olafcio.playclient.PlayAddon;
 
 import java.util.ArrayList;
@@ -119,8 +120,12 @@ public class Notifications extends HudElement {
             var text = compound.getString("text").orElseThrow();
 
             if (compound.contains("color")) {
-                var hex = compound.getString("color").orElseThrow();
-                var packed = Integer.parseInt(hex.substring(1), 16);
+                var raw = compound.getString("color").orElseThrow();
+                int packed;
+
+                if (raw.startsWith("#"))
+                    packed = Integer.parseInt(raw.substring(1), 16);
+                else packed = Formatting.byName(raw).getColorValue();
 
                 color = new Color(packed);
             }
