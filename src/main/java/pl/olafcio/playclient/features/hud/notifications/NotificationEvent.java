@@ -21,6 +21,6 @@ public record NotificationEvent(UUID uniqueId, @Nullable String prefixTitle, @Nu
 
     @Override
     public boolean equals(Object obj) {
-        return obj.hashCode() == this.hashCode();
+        return obj instanceof NotificationEvent && obj.hashCode() == this.hashCode();
     }
 }
