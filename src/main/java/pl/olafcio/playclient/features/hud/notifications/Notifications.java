@@ -8,6 +8,7 @@ import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.orbit.EventHandler;
 import pl.olafcio.playclient.PlayAddon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Notifications extends HudElement {
@@ -24,9 +25,14 @@ public class Notifications extends HudElement {
     public static final int HIDE_DURATION = 500;
 
     protected final HashMap<NotificationEvent, Long> notifications;
+    protected final ArrayList<NotificationEvent> toRemove;
+
     public Notifications() {
         super(INFO);
+
         notifications = new HashMap<>();
+        toRemove = new ArrayList<>();
+
         NotificationStore.EVENT_BUS.subscribe(this);
     }
 
@@ -66,27 +72,34 @@ public class Notifications extends HudElement {
 
         setSize(width, height);
 
-        for (var entry : notifications.entrySet()) {
-            var notif = entry.getKey();
-            var timeEnd = entry.getValue();
+        if (!notifications.isEmpty()) {
+            for (var entry : notifications.entrySet()) {
+                var notif = entry.getKey();
+                var timeEnd = entry.getValue();
 
-            if (timeEnd - DURATION >= now) {
-                // showing
-            } else if (timeEnd >= now) {
-                // rendering
-                renderer.quad(x, offset, width, height, background.get());
-                renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
-            } else if (timeEnd + HIDE_DURATION >= now) {
-                // hiding
-            } else {
-                notifications.remove(notif);
-                continue;
+                if (timeEnd - DURATION >= now) {
+                    // showing
+                } else if (timeEnd >= now) {
+                    // rendering
+                    renderer.quad(x, offset, width, height, background.get());
+                    renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
+                } else if (timeEnd + HIDE_DURATION >= now) {
+                    // hiding
+                } else {
+                    toRemove.add(notif);
+                    continue;
+                }
+
+                renderer.text("Meteor • " + notif.prefixTitle(), x + 3, offset + 3, textColor.get(), true, .7d);
+                renderer.text(notif.msg().getString(), x + 3, offset + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true);
+
+                offset -= height + gap;
             }
 
-            renderer.text("Meteor • " + notif.prefixTitle(), x + 3, offset + 3, textColor.get(), true, .7d);
-            renderer.text(notif.msg().getString(), x + 3, offset + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true);
+            for (var notif : toRemove)
+                notifications.remove(notif);
 
-            offset -= height + gap;
+            toRemove.clear();
         }
     }
 
