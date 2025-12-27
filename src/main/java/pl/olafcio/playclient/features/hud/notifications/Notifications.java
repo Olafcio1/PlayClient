@@ -165,7 +165,13 @@ public class Notifications extends HudElement {
         renderer.quad(x, y, width, height, background.get());
         renderer.quad(x, y + height - lineHeight.get(), width * Math.min(1, 1 - anim), lineHeight.get(), lineBackground.get());
 
-        renderer.text("Meteor • " + notif.prefixTitle, x + 3, y + 3, textColor.get(), true, .8d);
+        var text = new StringBuilder("Meteor");
+        if (notif.prefixTitle != null) {
+            text.append(" • ");
+            text.append(notif.prefixTitle);
+        }
+
+        renderer.text(text.toString(), x + 3, y + 3, textColor.get(), true, .8d);
         drawMultiText(renderer, notif.msg, x + 3, y + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true, 1d);
 
         var bSize = borderSize.get();
