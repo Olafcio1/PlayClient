@@ -39,9 +39,7 @@ public abstract class InventoryScreenMixin extends RecipeBookScreen<PlayerScreen
 
     @Override
     public boolean mouseClicked(Click click, boolean doubled) {
-        if (!cpe.isHovered())
-            cpe.setFocused(false);
-
+        cpe.setFocused(cpe.isHovered());
         return super.mouseClicked(click, doubled);
     }
 
