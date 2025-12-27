@@ -8,9 +8,11 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
@@ -20,19 +22,22 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import pl.olafcio.playclient.PlayAddon;
 import pl.olafcio.playclient.util.message.MessageParser;
 import pl.olafcio.playclient.util.message.MessageUnparser;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.function.Function;
 
 public class Airstrike extends Module {
     public final ArrayList<AirstrikeRecord> records;
     public boolean affectEveryone;
+
+    protected static final Random random = new Random();
 
     public Airstrike() {
         super(PlayAddon.GRIEF, "Airstrike", "Spawns entities as configured. Requires GMC.");
@@ -78,29 +83,55 @@ public class Airstrike extends Module {
                 record.entityType + "_spawn_egg"
         ));
 
+        if (item == Items.AIR)
+            item = Items.PIG_SPAWN_EGG;
+
         var stack = new ItemStack(item, 1);
         var entityType = EntityType.get(record.entityType);
 
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
         entityType.ifPresent(type -> {
-            var nbt = stack.get(DataComponentTypes.ENTITY_DATA)
-                           .nbt;
-
-            addEntityData(record, nbt);
+            handleEntityType(record, type, stack);
         });
 
         mc.player.getInventory().setSelectedStack(stack);
         mc.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(
-                mc.player.getInventory().getSelectedSlot(),
+                36 + mc.player.getInventory().getSelectedSlot(),
                 stack
         ));
 
+        var entityPos = mc.player.getEntityPos();
+        var blockPos = mc.player.getBlockPos();
+
+        var number = random.nextDouble(-3, 3);
+
+        entityPos = entityPos.add(number);
+        blockPos = new BlockPos(
+                blockPos.getX() + (int)number,
+                blockPos.getY() + (int)number,
+                blockPos.getZ() + (int)number
+        );
+
         mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(
-                mc.player.getEntityPos(),
+                entityPos,
                 Direction.EAST,
-                mc.player.getBlockPos(),
+                blockPos,
                 mc.player.isInsideWall()
         ));
+    }
+
+    protected void handleEntityType(AirstrikeRecord record, EntityType<?> type, ItemStack stack) {
+        var src = ComponentMap.builder();
+        var data = TypedEntityData.create(type, new NbtCompound());
+
+        //noinspection unchecked
+        src.add(DataComponentTypes.ENTITY_DATA, (TypedEntityData<EntityType<?>>) (Object) data);
+
+        var nbt = data.nbt;
+        nbt.putString("id", record.entityType);
+        addEntityData(record, nbt);
+
+        stack.applyComponentsFrom(src.build());
     }
 
     @Override
