@@ -28,12 +28,11 @@ public abstract class InventoryScreenMixin extends RecipeBookScreen<PlayerScreen
 
     @Inject(at = @At("CTOR_HEAD"), method = "<init>")
     public void construct(PlayerEntity player, CallbackInfo ci) {
-        int elHeight = client.textRenderer.fontHeight + 8;
         addDrawableChild(cpe = new ChatPromptElement(
                 client.textRenderer,
-                0, height - elHeight,
+                0, 0,
                 100,
-                elHeight,
+                client.textRenderer.fontHeight + 8,
                 Text.of("chat box")
         ));
     }
