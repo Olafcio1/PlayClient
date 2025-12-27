@@ -45,7 +45,7 @@ public class Airstrike extends Module {
     public void onTick(TickEvent.Pre event) {
         for (var record : records) {
             if (affectEveryone) {
-                var entityData = getEntityData(record);
+                var entityData = addEntityData(record, new NbtCompound());
                 entityData.put("CustomName", new MessageUnparser(new MessageParser(record.customName).run()).run());
 
                 mc.player.networkHandler.sendPacket(new CommandExecutionC2SPacket(
@@ -60,9 +60,7 @@ public class Airstrike extends Module {
         }
     }
 
-    protected NbtCompound getEntityData(AirstrikeRecord record) {
-        var entityData = new NbtCompound();
-
+    protected NbtCompound addEntityData(AirstrikeRecord record, NbtCompound entityData) {
         if (record.nameVisible) entityData.putBoolean("CustomNameVisible", true);
         if (record.noGravity) entityData.putBoolean("NoGravity", true);
         if (record.noAI) entityData.putBoolean("NoAI", true);
@@ -85,13 +83,10 @@ public class Airstrike extends Module {
 
         stack.set(DataComponentTypes.CUSTOM_NAME, Text.of(record.customName.replace("&", "§")));
         entityType.ifPresent(type -> {
-            var nbt = getEntityData(record);
-            var data = withEntityType(record, type, nbt);
+            var nbt = stack.get(DataComponentTypes.ENTITY_DATA)
+                           .nbt;
 
-            stack.set(
-                    DataComponentTypes.ENTITY_DATA,
-                    data
-            );
+            addEntityData(record, nbt);
         });
 
         mc.player.getInventory().setSelectedStack(stack);
@@ -106,14 +101,6 @@ public class Airstrike extends Module {
                 mc.player.getBlockPos(),
                 mc.player.isInsideWall()
         ));
-    }
-
-    @SuppressWarnings("unchecked")
-    private @NotNull <T extends EntityType<?>> TypedEntityData<EntityType<?>> withEntityType(AirstrikeRecord record, T type, NbtCompound nbt) {
-        var data = TypedEntityData.create(type, nbt);
-        data.nbt.putString("id", record.entityType);
-
-        return (TypedEntityData<EntityType<?>>) data;
     }
 
     @Override
