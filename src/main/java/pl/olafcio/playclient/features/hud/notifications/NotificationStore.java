@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public final class NotificationStore {
     private NotificationStore() {
-        throw new AssertionError("Tried to construct an utility class");
+        throw new AssertionError("Tried to construct a utility class");
     }
 
     public static final IEventBus EVENT_BUS;
@@ -22,7 +22,7 @@ public final class NotificationStore {
         });
     }
 
-    public static void add(@Nullable String prefixTitle, @Nullable Formatting prefixColor, Text msg) {
+    public static void push(@Nullable String prefixTitle, @Nullable Formatting prefixColor, Text msg) {
         EVENT_BUS.post(new NotificationEvent(UUID.randomUUID(), prefixTitle, prefixColor, msg));
     }
 }

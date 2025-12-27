@@ -13,6 +13,6 @@ import pl.olafcio.playclient.features.hud.notifications.NotificationStore;
 public class ChatUtilsMixin {
     @Inject(at = @At("TAIL"), method = "sendMsg(ILjava/lang/String;Lnet/minecraft/util/Formatting;Lnet/minecraft/text/Text;)V")
     private static void sendMsg(int id, String prefixTitle, Formatting prefixColor, Text msg, CallbackInfo ci) {
-        NotificationStore.add(prefixTitle, prefixColor, msg);
+        NotificationStore.push(prefixTitle, prefixColor, msg);
     }
 }

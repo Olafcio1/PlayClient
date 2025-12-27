@@ -23,10 +23,17 @@ public class Notifications extends HudElement {
     public static final int SHOW_DURATION = 500;
     public static final int HIDE_DURATION = 500;
 
-    protected HashMap<NotificationEvent, Long> notifications;
+    protected final HashMap<NotificationEvent, Long> notifications;
     public Notifications() {
         super(INFO);
         notifications = new HashMap<>();
+        NotificationStore.EVENT_BUS.subscribe(this);
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        NotificationStore.EVENT_BUS.unsubscribe(this);
     }
 
     protected final ColorSetting background = settings.getDefaultGroup().add(new ColorSetting.Builder()
