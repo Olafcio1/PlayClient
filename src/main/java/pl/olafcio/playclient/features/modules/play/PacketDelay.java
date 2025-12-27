@@ -6,6 +6,7 @@ import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.PacketListSetting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.network.PacketUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.Packet;
 import pl.olafcio.playclient.PlayAddon;
@@ -37,13 +38,7 @@ public class PacketDelay extends Module {
     private final PacketListSetting c2sPackets = sgC2S.add(new PacketListSetting.Builder()
             .name("packets")
             .description("The list of packets")
-            .filter(packet -> {
-                try {
-                    return packet.getPackageName().contains("c2s") || packet.getDeclaredMethod("apply").getReturnType().getSimpleName().equals("class_2602");
-                } catch (NoSuchMethodException e) {
-                    return false;
-                }
-            })
+            .filter(packet -> PacketUtils.getC2SPackets().contains(packet))
     .build());
 
     private final SettingGroup sgS2C = settings.createGroup("S2C");
@@ -60,13 +55,7 @@ public class PacketDelay extends Module {
     private final PacketListSetting s2cPackets = sgS2C.add(new PacketListSetting.Builder()
             .name("packets")
             .description("The list of packets")
-            .filter(packet -> {
-                try {
-                    return packet.getPackageName().contains("s2c") || packet.getDeclaredMethod("apply").getReturnType().getSimpleName().equals("class_2792");
-                } catch (NoSuchMethodException e) {
-                    return false;
-                }
-            })
+            .filter(packet -> PacketUtils.getS2CPackets().contains(packet))
     .build());
 
     private final ArrayList<Packet<?>> c2sBuffer;
