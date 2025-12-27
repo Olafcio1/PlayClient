@@ -8,6 +8,7 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
@@ -36,18 +37,36 @@ import java.util.function.Function;
 public class Airstrike extends Module {
     public final ArrayList<AirstrikeRecord> records;
     public boolean affectEveryone;
+    public boolean skipCheck;
 
     protected static final Random random = new Random();
 
     public Airstrike() {
-        super(PlayAddon.GRIEF, "Airstrike", "Spawns entities as configured. Requires GMC.");
+        super(PlayAddon.GRIEF, "Airstrike", "Spawns entities as configured.");
 
         records = new ArrayList<>();
         affectEveryone = false;
+        skipCheck = false;
     }
 
     @EventHandler
+    @SuppressWarnings("AssignmentUsedAsCondition")
     public void onTick(TickEvent.Pre event) {
+        assert mc.player != null;
+        if (!skipCheck) {
+            var blocked = false;
+            if (affectEveryone) {
+                if (blocked = !mc.player.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+                    error("Not an operator.");
+            } else if (blocked = !mc.player.isInCreativeMode())
+                error("Not in creative mode.");
+
+            if (blocked) {
+                toggle();
+                return;
+            }
+        }
+
         for (var record : records) {
             if (affectEveryone) {
                 var entityData = addEntityData(record, new NbtCompound());
@@ -156,6 +175,11 @@ public class Airstrike extends Module {
                affectEveryone = value;
            });
 
+        tag.getBoolean("settings-skip-check")
+           .ifPresent(value -> {
+               skipCheck = value;
+           });
+
         return this;
     }
 
@@ -168,6 +192,7 @@ public class Airstrike extends Module {
 
     protected void fillList(GuiTheme theme, WVerticalList list) {
         listAppendAE(theme, list);
+        listAppendSC(theme, list);
         listAppendBottom(theme, list);
 
         for (var record : records)
@@ -213,6 +238,20 @@ public class Airstrike extends Module {
         var check = aeW.add(theme.checkbox(affectEveryone)).widget();
         check.action = () -> {
             affectEveryone = check.checked;
+        };
+
+        list.add(aeW);
+    }
+
+    protected void listAppendSC(GuiTheme theme, WVerticalList list) {
+        var aeW = theme.horizontalList();
+
+        aeW.add(theme.label("Skip Check")).widget()
+                .tooltip = "Skips OP/GMC check depending on the configuration. NOTE: May cause desync!";
+
+        var check = aeW.add(theme.checkbox(skipCheck)).widget();
+        check.action = () -> {
+            skipCheck = check.checked;
         };
 
         list.add(aeW);
@@ -338,6 +377,7 @@ public class Airstrike extends Module {
 
         tag.put("settings-records", output);
         tag.putBoolean("settings-affect-everyone", affectEveryone);
+        tag.putBoolean("settings-skip-check", skipCheck);
         return tag;
     }
 }
