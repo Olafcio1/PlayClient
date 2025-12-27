@@ -46,9 +46,13 @@ public class Notifications extends HudElement {
     public void render(HudRenderer renderer) {
         var now = System.currentTimeMillis();
 
-        var offset = y;
-        var height = 25;
+        var width = 70;
+        var height = 30;
+
+        var offset = y - height;
         var gap = 8;
+
+        setSize(width, height);
 
         for (var entry : notifications.entrySet()) {
             var notif = entry.getKey();
@@ -58,7 +62,7 @@ public class Notifications extends HudElement {
                 // showing
             } else if (timeEnd >= now) {
                 // rendering
-                renderer.quad(x, offset, getWidth(), height, background.get());
+                renderer.quad(x, offset, width, height, background.get());
                 renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
             } else if (timeEnd + 500 >= now) {
                 // hiding
