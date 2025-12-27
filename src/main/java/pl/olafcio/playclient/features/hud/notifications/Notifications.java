@@ -18,6 +18,11 @@ public class Notifications extends HudElement {
             Notifications::new
     );
 
+    // TODO: Convert these into settings
+    public static final int DURATION = 3000;
+    public static final int SHOW_DURATION = 500;
+    public static final int HIDE_DURATION = 500;
+
     protected HashMap<NotificationEvent, Long> notifications;
     public Notifications() {
         super(INFO);
@@ -58,13 +63,13 @@ public class Notifications extends HudElement {
             var notif = entry.getKey();
             var timeEnd = entry.getValue();
 
-            if (timeEnd - 3000 >= now) {
+            if (timeEnd - DURATION >= now) {
                 // showing
             } else if (timeEnd >= now) {
                 // rendering
                 renderer.quad(x, offset, width, height, background.get());
                 renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
-            } else if (timeEnd + 500 >= now) {
+            } else if (timeEnd + HIDE_DURATION >= now) {
                 // hiding
             } else {
                 notifications.remove(notif);
@@ -80,6 +85,6 @@ public class Notifications extends HudElement {
 
     @EventHandler
     public void onNotification(NotificationEvent event) {
-        notifications.put(event, System.currentTimeMillis() + 3000 + 500);
+        notifications.put(event, System.currentTimeMillis() + DURATION + SHOW_DURATION);
     }
 }
