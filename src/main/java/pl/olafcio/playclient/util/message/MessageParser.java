@@ -51,7 +51,7 @@ public class MessageParser {
 
         while (!reachedEOF()) {
             var ch = consume();
-            if (ch == '&') {
+            if (ch == '&' || ch == '§') {
                 var next = consume();
                 if (next == '#') {
                     var value = new StringBuilder();
