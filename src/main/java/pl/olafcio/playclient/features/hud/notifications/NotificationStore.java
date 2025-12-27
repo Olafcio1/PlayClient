@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public final class NotificationStore {
     private NotificationStore() {
-        throw new AssertionError("Tried to construct an utility class");
+        throw new AssertionError("Tried to construct a utility class");
     }
 
     public static final IEventBus EVENT_BUS;

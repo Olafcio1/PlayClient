@@ -48,6 +48,15 @@ public class Notifications extends HudElement {
     .build());
 
     @Override
+    public void toggle() {
+        super.toggle();
+
+        if (isActive())
+            NotificationStore.EVENT_BUS.subscribe(this);
+        else NotificationStore.EVENT_BUS.unsubscribe(this);
+    }
+
+    @Override
     public void render(HudRenderer renderer) {
         var now = System.currentTimeMillis();
 
