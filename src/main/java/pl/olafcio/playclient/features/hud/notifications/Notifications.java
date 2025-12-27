@@ -210,13 +210,49 @@ public class Notifications extends HudElement {
                 color = new Color(packed);
             }
 
-            renderer.text(
+            drawWrappedText(renderer,
                     text,
                     x, y,
+                    width.get(),
                     color,
                     shadow, scale
             );
         }
+    }
+
+    protected static double drawWrappedText(
+            HudRenderer renderer,
+            String text,
+            double x, double y,
+            double maxWidth,
+            Color color,
+            boolean shadow, double scale
+    ) {
+        var characters = text.toCharArray();
+        var maxX = x + maxWidth;
+
+        var currentX = x;
+        for (var i = 0; i < characters.length; i++) {
+            var str = String.valueOf(characters[i]);
+            if (str.equals("\n") || str.equals("\r")) {
+                currentX = x;
+                y += renderer.textHeight(shadow, scale);
+
+                continue;
+            } else if (currentX + renderer.textWidth(str, shadow, scale) + 5 >= maxX) {
+                renderer.text("-", currentX, y, color, shadow, scale);
+
+                currentX = x;
+                y += renderer.textHeight(shadow, scale);
+
+                i--;
+                continue;
+            }
+
+            currentX = renderer.text(str, currentX, y, color, shadow, scale);
+        }
+
+        return y;
     }
 
     @EventHandler
