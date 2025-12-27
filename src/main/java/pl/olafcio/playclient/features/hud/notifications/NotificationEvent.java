@@ -7,20 +7,34 @@ import org.jetbrains.annotations.Nullable;
 import pl.olafcio.playclient.util.message.MessageParser;
 import pl.olafcio.playclient.util.message.MessageUnparser;
 
-import java.util.UUID;
+public class NotificationEvent {
+    public final @Nullable String prefixTitle;
+    public final @Nullable Formatting prefixColor;
+    public final NbtList msg;
 
-public record NotificationEvent(UUID uniqueId, @Nullable String prefixTitle, @Nullable Formatting prefixColor, NbtList msg) {
-    public NotificationEvent(UUID uniqueId, @Nullable String prefixTitle, @Nullable Formatting prefixColor, Text msg) {
-        this(uniqueId, prefixTitle, prefixColor, new MessageUnparser(new MessageParser(msg.getString()).run()).run());
+    public int hash = 0;
+    public NotificationEvent(@Nullable String prefixTitle, @Nullable Formatting prefixColor, Text msg) {
+        this.prefixTitle = prefixTitle;
+        this.prefixColor = prefixColor;
+        this.msg = new MessageUnparser(new MessageParser(msg.getString()).run()).run();
     }
 
     @Override
     public int hashCode() {
-        return uniqueId.hashCode();
+        return hash;
+    }
+
+    public int repeatCode() {
+        var code = msg.hashCode();
+
+        if (prefixTitle != null) code += prefixTitle.hashCode();
+        if (prefixColor != null) code += prefixColor.hashCode();
+
+        return code;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof NotificationEvent && obj.hashCode() == this.hashCode();
+        return obj instanceof NotificationEvent notif && notif.repeatCode() == this.repeatCode();
     }
 }

@@ -1,5 +1,6 @@
 package pl.olafcio.playclient.features.hud.notifications;
 
+import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
@@ -62,51 +63,63 @@ public class Notifications extends HudElement {
             .defaultValue(new Color(235, 235, 235))
     .build());
 
+    protected int id = 0;
+
     @Override
     public void render(HudRenderer renderer) {
-        var now = System.currentTimeMillis();
-
-        var width = 70;
-        var height = 30;
-
-        var offset = y - height;
-        var gap = 8;
+        var width = 200;
+        var height = 84;
 
         setSize(width, height);
 
         if (!notifications.isEmpty()) {
+            var now = System.currentTimeMillis();
+
+            var offset = y;
+            var gap = 8;
+
             for (var entry : notifications.entrySet()) {
                 var notif = entry.getKey();
                 var timeEnd = entry.getValue();
 
+                var thisY = offset;
+                float anim;
+
                 if (timeEnd - DURATION >= now) {
                     // showing
+                    long time = (timeEnd - DURATION) - now;
+                    anim = (float)time / (float)SHOW_DURATION;
+
+                    thisY += (int) ((float)(MeteorClient.mc.getWindow().getHeight() - thisY) * anim);
                 } else if (timeEnd >= now) {
                     // rendering
                 } else if (timeEnd + HIDE_DURATION >= now) {
                     // hiding
+                    long time = (timeEnd + HIDE_DURATION) - now;
+                    anim = (float)time / (float)HIDE_DURATION;
+
+                    thisY += (int) ((float)(MeteorClient.mc.getWindow().getHeight() - thisY) * (1 - anim));
                 } else {
                     toRemove.add(notif);
                     continue;
                 }
 
-                renderer.quad(x, offset, width, height, background.get());
-                renderer.line(x, offset + height - 1, x, offset + height, lineBackground.get());
+                renderer.quad(x, thisY, width, height, background.get());
+                renderer.line(x, thisY + height - 1, x, thisY + height, lineBackground.get());
 
-                renderer.text("Meteor • " + notif.prefixTitle(), x + 3, offset + 3, textColor.get(), true, .7d);
-                drawMultiText(renderer, notif.msg(), x + 3, offset + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true, 1d);
+                renderer.text("Meteor • " + notif.prefixTitle, x + 3, thisY + 3, textColor.get(), true, .8d);
+                drawMultiText(renderer, notif.msg, x + 3, thisY + 3 + renderer.textHeight(true, .7d) + 3, textColor.get(), true, 1d);
 
                 offset -= height + gap;
             }
 
-            for (var notif : toRemove)
-                notifications.remove(notif);
-
-            toRemove.clear();
+            removeSelected();
+            if (notifications.isEmpty())
+                id = 0;
         }
     }
 
-    private void drawMultiText(
+    protected void drawMultiText(
             HudRenderer renderer,
             NbtList fragments,
             double x,
@@ -141,6 +154,20 @@ public class Notifications extends HudElement {
 
     @EventHandler
     public void onNotification(NotificationEvent event) {
+        event.hash = id++;
+
+        for (var n : notifications.keySet())
+            if (n.repeatCode() == event.repeatCode())
+                toRemove.add(n);
+
+        removeSelected();
         notifications.put(event, System.currentTimeMillis() + DURATION + SHOW_DURATION);
+    }
+
+    protected void removeSelected() {
+        for (var notif : toRemove)
+            notifications.remove(notif);
+
+        toRemove.clear();
     }
 }

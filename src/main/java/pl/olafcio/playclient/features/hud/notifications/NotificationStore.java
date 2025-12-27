@@ -7,7 +7,6 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandles;
-import java.util.UUID;
 
 public final class NotificationStore {
     private NotificationStore() {
@@ -23,6 +22,6 @@ public final class NotificationStore {
     }
 
     public static void push(@Nullable String prefixTitle, @Nullable Formatting prefixColor, Text msg) {
-        EVENT_BUS.post(new NotificationEvent(UUID.randomUUID(), prefixTitle, prefixColor, msg));
+        EVENT_BUS.post(new NotificationEvent(prefixTitle, prefixColor, msg));
     }
 }
