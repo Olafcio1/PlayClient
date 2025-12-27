@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "PlayerEntityMixin",
+    "meteor.ChatUtilsMixin",
     "meteor.ConfigMixin",
     "meteor.GuiThemesMixin",
     "meteor.ISetting"
