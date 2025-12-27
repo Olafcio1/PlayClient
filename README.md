@@ -30,7 +30,9 @@
 | Play Client     | ElytraTarget   | flies onto a player with elytra                                             |
 | Play Client     | InfReach       | expands your reach infinitely by teleporting to the target for the hit-time |
 | Play Client     | TriggerBot     | clicks on the entity you're looking at                                      |
-| Play &gt; Grief | AutoCommandSet | automatically schedules the specified commands the best as it can           |                             |
+| Play Client     | PacketDelay    | delays specified packets until module deactivation                          |
+| Play &gt; Grief | AutoCommandSet | automatically schedules the specified commands the best as it can           |
+| Play &gt; Grief | AirStrike      | summons the specified things around you (requires OP/GMC)                   |
 
 <b>Commands:</b>
 
@@ -43,7 +45,7 @@
 | Type     | Name | Description                                                                |
 |----------|------|----------------------------------------------------------------------------|
 | Theme    | Play | a custom theme, having colorful module category headers with special icons |
-| MC Theme | -    | Custom game logo, button backgrounds & mouse pointer on hover              |
+| MC Theme | -    | custom game logo, button backgrounds & mouse pointer on hover              |
 
 ## 📃 TODO
 | Type   | Name         | Description                                                                 | Planned version |
