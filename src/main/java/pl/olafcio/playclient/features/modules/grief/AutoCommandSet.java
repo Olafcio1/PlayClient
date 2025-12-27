@@ -68,8 +68,20 @@ public class AutoCommandSet extends Module {
             cmd = cmd.replace("\"", "\\\"");
 
             if (!run(
-                    "data merge block 0 %d 0 {Command:\"%s\"}",
-                    i, cmd
+                    new String[][]{
+                            new String[]{
+                                    "data merge block 0 %d 0 {Command:\"%s\"}",
+                            },
+                            new String[]{
+                                    "data merge block 0 %d 0 {x:\"%s\"}",
+                                    "data modify block 0 %d 0 Command set from block 0 %d 0 x",
+                                    "data remove block 0 %d 0 x"
+                            }
+                    },
+                    i, cmd,
+                    i, cmd,
+                    i, i,
+                    i
             ))
                 error("[Command %d/Block] No chat space left in chatbox (>255 characters)".formatted(i));
 
