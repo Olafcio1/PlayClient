@@ -34,8 +34,11 @@ public class LogoDrawerMixin {
     @Final
     public static Identifier EDITION_TEXTURE;
 
-    @Inject(at = @At("HEAD"), method = "draw(Lnet/minecraft/client/gui/DrawContext;IFI)V")
+    @Inject(at = @At("HEAD"), method = "draw(Lnet/minecraft/client/gui/DrawContext;IFI)V", cancellable = true)
     public void draw(DrawContext context, int screenWidth, float alpha, int y, CallbackInfo ci) {
+        if (ci.isCancelled()) return;
+        ci.cancel();
+
         float f = this.ignoreAlpha ? 1.0F : alpha;
 
         int i = screenWidth / 2 - 128;
