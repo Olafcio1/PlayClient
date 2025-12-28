@@ -1,6 +1,6 @@
 <div align="center">
     <p></p>
-    <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-1.11.jar">
+    <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-1.12.jar">
         <img src="https://img.shields.io/badge/DOWNLOAD-beaa55?style=for-the-badge" alt="Download button" width="360" />
     </a>
     <p>Or, alternatively, <a href="https://github.com/Olafcio1/PlayClient/raw/refs/heads/main/bin/PlayClient-nightly.jar">download the dev build</a></p>
@@ -40,12 +40,19 @@
 |--------|-----------------------------------|
 | Payall | splits your money per all players |
 
+<b>HUD Elements:</b>
+
+| Name          | Description                                                                   |
+|---------------|-------------------------------------------------------------------------------|
+| Notifications | renders meteor notifications as rectangles, usually on a corner on the screen |
+
 <b>Miscellaneous:</b>
 
-| Type     | Name | Description                                                                |
-|----------|------|----------------------------------------------------------------------------|
-| Theme    | Play | a custom theme, having colorful module category headers with special icons |
-| MC Theme | -    | custom game logo, button backgrounds & mouse pointer on hover              |
+| Type     | Name          | Description                                                                |
+|----------|---------------|----------------------------------------------------------------------------|
+| Theme    | Play          | a custom theme, having colorful module category headers with special icons |
+| MC Theme | -             | custom game logo, button backgrounds & mouse pointer on hover              |
+| Feature  | InventoryChat | adds an input box to the inventory screen so you can chat inside GUIs      |
 
 ## 📃 TODO
 | Type   | Name         | Description                                                                 | Planned version |
