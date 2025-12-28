@@ -187,6 +187,7 @@ public class Airstrike extends Module {
     @Override
     public WWidget getWidget(GuiTheme theme) {
         var list = theme.verticalList();
+        list.minWidth = 500;
         fillList(theme, list);
         return list;
     }
