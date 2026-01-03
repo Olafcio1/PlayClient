@@ -41,6 +41,7 @@ public class TargetStrafe extends Module {
             .description("The amount of degrees to add each tick.")
             .range(1, 359)
             .sliderRange(1, 359)
+            .defaultValue(4)
     .build());
 
     BoolSetting ignoreFriends = settings.getDefaultGroup().add(new BoolSetting.Builder()
