@@ -40,6 +40,7 @@ public class PlayAddon extends MeteorAddon {
         // Modules > Play | Grief
         Modules.get().add(new AutoCommandSet());
         Modules.get().add(new Airstrike());
+        Modules.get().add(new OperatorSelect());
 
         // HUD Elements
         Hud.get().register(Notifications.INFO);
