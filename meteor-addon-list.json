@@ -1,0 +1,36 @@
+{
+  "description": "Adds many unique and useful modules.",
+  "tags": [
+    "Automation",
+    "Griefing",
+    "Misc",
+    "PvP",
+    "Theme",
+    "Utility"
+  ],
+  "supported_versions": [
+    "1.21.11"
+  ],
+  "icon": "https://raw.githubusercontent.com/Olafcio1/PlayClient/refs/heads/main/src/main/resources/assets/playclient/logo.png",
+  "discord": "https://discord.gg/SqTNnev3Rs",
+  "homepage": "https://olafcio1.github.io",
+  "feature_directories": {
+    "commands": [
+      "StaffWarner",
+      "PlayerMover",
+      "TargetStrafe",
+      "ElytraTarget",
+      "InfReach",
+      "TriggerBot",
+      "PacketDelay",
+      "AutoCommandSet",
+      "Airstrike"
+    ],
+    "modules": [
+      "Payall"
+    ],
+    "hud_elements": [
+      "Notifications"
+    ]
+  }
+}
