@@ -15,11 +15,13 @@ import pl.olafcio.playclient.features.hud.notifications.Notifications;
 import pl.olafcio.playclient.features.modules.grief.*;
 import pl.olafcio.playclient.features.modules.grief.airstrike.Airstrike;
 import pl.olafcio.playclient.features.modules.play.*;
+import pl.olafcio.playclient.features.modules.render.CustomShadow;
 import pl.olafcio.playclient.theme.PlayGuiTheme;
 
 public class PlayAddon extends MeteorAddon {
     public static Category CATEGORY = new Category("Play Client");
     public static Category GRIEF = new Category("Play Client | Grief");
+    public static Category RENDER = new Category("Play Client | Render");
 
     public static HudGroup HUD_GROUP = new HudGroup("Play Client");
 
@@ -41,6 +43,9 @@ public class PlayAddon extends MeteorAddon {
         Modules.get().add(new AutoCommandSet());
         Modules.get().add(new Airstrike());
 
+        // Modules > Play | Render
+        Modules.get().add(new CustomShadow());
+
         // HUD Elements
         Hud.get().register(Notifications.INFO);
 
@@ -52,6 +57,7 @@ public class PlayAddon extends MeteorAddon {
     public void onRegisterCategories() {
         Modules.registerCategory(CATEGORY);
         Modules.registerCategory(GRIEF);
+        Modules.registerCategory(RENDER);
     }
 
     @Override
